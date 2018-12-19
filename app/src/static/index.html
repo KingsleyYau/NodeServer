@@ -1,0 +1,154 @@
+<html>
+<head>
+<title>ImService test client</title>
+</head>
+
+<script src="jquery.min.js"></script>
+<!--<script src="socket.io.js"></script>-->
+<script>
+
+var client;
+var reqId = 0;
+
+function connect() {
+    client = new WebSocket('ws://192.168.88.138:9877/');
+    client.binaryType = 'arraybuffer';
+
+	client.onopen = function() {
+		console.log('Client onopen()');
+
+		// var bytes = new Uint8Array([0x48, 0x65, 0x6C, 0x6C, 0x6F]); // Hello
+		// client.send(bytes.buffer);
+    };
+
+	client.onclose = function(ev) {
+        console.log('Client onclose()');
+
+        $("[id=socketId]").html("Not Connected");
+
+        reconnect();
+    }
+
+	client.onmessage = function(ev) {
+        console.log('Client onmessage(), ' + ev.data);
+        let obj = JSON.parse(ev.data);
+
+        if(obj.route == 'imLogin/login') {
+            $("[id=socketId]").html(obj.data.socketid);
+        } else if(obj.route == 'imMan/roomIn') {
+            $("[id=roomId]").html(obj.data.roomid);
+        } else if(obj.route == 'imMan/roomOut') {
+            $("[id=roomId]").html("No Room");
+        }
+	};
+};
+
+function send(obj) {
+    obj.id = reqId;
+    data = JSON.stringify(obj);
+    console.log('Client send(), ' + data);
+
+    if( client.readyState == client.OPEN ) {
+        client.send(data);
+        reqId++;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function login() {
+    obj = {
+        route:'imLogin/login',
+        req_data:{
+            sessionid:'session123456',
+            pagename:7
+        }
+    }
+    send(obj);
+}
+
+function logout() {
+    obj = {
+        route:'imLogin/logout',
+        req_data:{
+            sessionid:'session123456',
+            pagename:7
+        }
+    }
+    send(obj);
+}
+
+function roomIn() {
+    obj = {
+        route:'imMan/roomIn',
+        req_data:{
+            token:'token123456',
+            roomid:'123456'
+        }
+    }
+    send(obj);
+}
+
+function roomOut(roomid) {
+    obj = {
+        route:'imMan/roomOut',
+        req_data:{
+            token:'token123456',
+            roomid:roomid
+        }
+    }
+    send(obj);
+}
+
+function sendMsg(roomid, msg) {
+    obj = {
+        route:'imShare/sendLiveChat',
+        req_data:{
+            token:'token123456',
+            roomid:roomid,
+            msg:msg
+        }
+    }
+    send(obj);
+}
+
+function reconnect() {
+    console.log('Client reconnect()');
+    setTimeout(() => {
+        if( client.readyState == client.OPEN ) {
+            // 连接已经成功, 退出循环
+        } else if(client.readyState == client.CLOSED) {
+            // 开始连接
+            connect();
+        }  else {
+            // 继续等待重连
+            reconnect();
+        }
+    }, 5000);
+}
+
+connect();
+
+</script>
+
+<!--<body onload="connect()">-->
+<body>
+<div id="">
+    <div id="login">
+        socketId : <lable id="socketId">Not Connected</lable>
+        <button onclick="login()">login</button>
+        <button onclick="logout()">logout</button>
+    </div>
+    <div id="room">
+        roomId : <lable id="roomId">No Room</lable>
+        <button onclick="roomIn()">roomIn</button>
+        <button onclick=roomOut($("#roomId").html().trim())>roomOut</button>
+    </div>
+    <div>
+        msg : <input id="msg" type="text" name="msg" />
+        <button onclick=sendMsg($("[id=roomId]").html().trim(),$("#msg").val())>sendMsg</button>
+    </div>
+</div>
+</body>
+</html>

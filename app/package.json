@@ -1,0 +1,29 @@
+{
+  "name": "serverjs",
+  "version": "1.0.0",
+  "main": "http_main.js",
+  "scripts": {
+    "build": "babel src -d dist",
+    "start": "npm run build && node dist/http_main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "freeswitch-esl": "^2.0.0",
+    "koa": "^2.6.2",
+    "koa-bodyparser": "^4.2.1",
+    "koa-cors": "0.0.16",
+    "koa-route": "^3.2.0",
+    "koa-router": "^7.4.0",
+    "koa-session-minimal": "^3.0.4",
+    "koa-static": "^5.0.0",
+    "koa-websocket": "^5.0.1",
+    "log4js": "^3.0.6",
+    "mysql": "^2.16.0",
+    "path": "^0.12.7",
+    "socket.io": "^2.2.0",
+    "socket.io-json-parser": "^2.1.0"
+  }
+}

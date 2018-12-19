@@ -1,0 +1,23 @@
+{
+  // For debug
+  "sourceMap": true,
+  "inlineSources": true,
+
+  "compileOnSave": true,
+  "compilerOptions": {
+    "module": "system",
+    "target": "es6",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "outDir": "./build",
+    "sourceMap": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
+}
