@@ -36,7 +36,11 @@ function connect() {
         console.log('Client onmessage(), ' + ev.data);
         let obj = JSON.parse(ev.data);
 
-        if( typeof(obj.errno) == "undefined" || obj.errno == 0) {
+        if( typeof(obj.req_data) != "undefined" ) {
+            $("[id=jsonRecv]").html(ev.data);
+        }
+
+        if( typeof(obj.errno) == "undefined" || obj.errno == 0 ) {
             if(obj.route == 'imLogin/login') {
                 $("[id=socketId]").html(obj.data.socketid);
             } else if(obj.route == 'imMan/roomIn') {
@@ -45,10 +49,6 @@ function connect() {
                 $("[id=roomId]").html("No Room");
             } else if(obj.route == 'imShare/sendChatNotice') {
                 $("[id=msgRecv]").html(obj.req_data.msg);
-            } else if(obj.route == 'imShare/enterRoomNotice') {
-                $("[id=roomNoticeRecv]").html(JSON.stringify(obj.req_data));
-            } else if(obj.route == 'imShare/leaveRoomNotice') {
-                $("[id=roomNoticeRecv]").html(JSON.stringify(obj.req_data));
             }
         }
 	};
@@ -176,7 +176,7 @@ connect();
         msg recv : <lable id="msgRecv" />
     </div>
     <div>
-        room notice recv : <lable id="roomNoticeRecv" />
+        json recv : <lable id="jsonRecv" />
     </div>
 </div>
 </body>

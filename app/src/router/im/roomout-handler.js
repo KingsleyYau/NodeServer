@@ -27,7 +27,7 @@ module.exports = class RoomOutHandler extends BaseHandler {
 
     async handle(ctx, reqData) {
         return await new Promise(function (resolve, reject) {
-            logger.info('[' + ctx.socketId + ']-RoomOutHandler.handle, ' + reqData);
+            logger.info('[' + ctx.socketId + ']-RoomOutHandler.handle');
 
             let user = this.getBaseRespond(ctx, reqData);
             if( !Common.isNull(user)  ) {

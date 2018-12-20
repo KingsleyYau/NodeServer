@@ -29,7 +29,7 @@ module.exports = class LoginHandler extends BaseHandler {
 
     async handle(ctx, reqData) {
         return await new Promise(function (resolve, reject) {
-            logger.info('[' + ctx.socketId + ']-LoginHandler.handle, ' + reqData);
+            logger.info('[' + ctx.socketId + ']-LoginHandler.handle');
 
             let user = new User(ctx.socketId, ctx.websocket);
             OnlineUserManager.getInstance().addUser(user);

@@ -30,7 +30,7 @@ module.exports = class SendMsgHandler extends BaseHandler {
 
     async handle(ctx, reqData) {
         return await new Promise(function (resolve, reject) {
-            logger.info('[' + ctx.socketId + ']-SendMsgHandler.handle, ' + reqData);
+            logger.info('[' + ctx.socketId + ']-SendMsgHandler.handle');
 
             let bFlag = false;
             let user = this.getBaseRespond(ctx, reqData);

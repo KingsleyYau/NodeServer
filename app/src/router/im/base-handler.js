@@ -46,7 +46,7 @@ module.exports = class BaseHandler {
 
     async handle(ctx, reqData) {
         return await new Promise(function (resolve, reject) {
-            logger.info('[' + ctx.socketId + ']-BaseHandler.handle, ' + reqData);
+            logger.info('[' + ctx.socketId + ']-BaseHandler.handle');
             this.getBaseRespond(reqData);
             reject('');
         }.bind(this));

@@ -27,7 +27,7 @@ module.exports = class RoomCreateHandler extends BaseHandler {
 
     async handle(ctx, reqData) {
         return await new Promise(function (resolve, reject) {
-            logger.info('[' + ctx.socketId + ']-RoomCreateHandler.handle, ' + reqData);
+            logger.info('[' + ctx.socketId + ']-RoomCreateHandler.handle');
 
             let roomManager = RoomMananger.getInstance();
             let room = roomManager.getRoom(reqData.req_data.roomid);
