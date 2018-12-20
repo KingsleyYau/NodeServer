@@ -8,7 +8,7 @@ const Common = require('./common');
 
 class User {
     constructor(socketId, websocket) {
-        this.reqId = 0;
+        this.noticeId = 0;
         this.socketId = socketId;
         this.websocket = websocket;
     }
@@ -31,11 +31,17 @@ class UserManager {
     }
 
     delUser(socketId) {
-        this.userList[socketId] = null;
+        delete this.userList[socketId];
     }
 
     getUser(socketId) {
         return this.userList[socketId];
+    }
+
+    getUsers(cb) {
+        Object.keys(this.userList).forEach((socketId) => {
+            cb(socketId, this.userList[socketId]);
+        });
     }
 }
 UserManager.instance = null;

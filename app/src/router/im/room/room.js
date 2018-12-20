@@ -7,6 +7,10 @@
 const Common = require('../../../lib/common');
 const Users = require('../../../lib/users');
 
+// 直播间推送类
+const RoomInNotice = require('../notice/roomin-notice');
+const RoomOutNotice = require('../notice/roomout-notice');
+
 class Room {
     constructor(roomId) {
         this.roomId = roomId;
@@ -15,10 +19,25 @@ class Room {
 
     addUser(user) {
         this.userManager.addUser(user);
+
+        // 通知其他用户，有人进入
+        let notice = new RoomInNotice(user);
+        this.broadcast(notice);
     }
 
-    delUser(socketId) {
-        this.userManager.delUser(socketId);
+    delUser(user) {
+        // 删除直播间用户
+        this.userManager.delUser(user.socketId);
+
+        // 通知其他用户，有人退出
+        let notice = new RoomOutNotice(user);
+        this.broadcast(notice);
+    }
+
+    broadcast(notice) {
+        this.userManager.getUsers( (socketId, toUser) => {
+            notice.send(toUser);
+        });
     }
 
     getData() {
@@ -50,11 +69,18 @@ class RoomManager {
     }
 
     delRoom(roomId) {
-        this.roomList[roomId] = null;
+        delete this.roomList[roomId];
     }
 
     getRoom(roomId) {
         return this.roomList[roomId];
+    }
+
+    delUser(user) {
+        Object.keys(this.roomList).forEach((roomId) => {
+            let room = this.roomList[roomId];
+            room.delUser(user);
+        });
     }
 }
 RoomManager.instance = null;

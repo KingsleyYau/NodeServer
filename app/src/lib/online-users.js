@@ -22,8 +22,8 @@ class OnlineUserManager {
         this.userManager.addUser(user);
     }
 
-    delUser(socketId) {
-        this.userManager.delUser(socketId);
+    delUser(user) {
+        this.userManager.delUser(user.socketId);
     }
 
     getUser(socketId) {
