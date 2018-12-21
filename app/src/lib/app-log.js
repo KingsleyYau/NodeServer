@@ -19,17 +19,12 @@ class AppLog {
     }
 
     log(category, level, msg) {
-        try {
-            this.client.emit('log', {
-                pid:process.pid,
-                category:category,
-                level:level,
-                msg:msg
-            });
-        } catch (e) {
-            console.log("AppLog-client err: " + e);
-        }
-
+        this.client.emit('log', {
+            pid:process.pid,
+            category:category,
+            level:level,
+            msg:msg
+        });
     }
 }
 

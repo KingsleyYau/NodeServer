@@ -35,8 +35,8 @@ class LogService {
             socket.on('log', (obj) => {
                 let json = JSON.stringify(obj);
 
-                let logger = Log.getLogger(obj.category);
-                logger.log(obj.level, '[pid:' + obj.pid + '] - ' + obj.msg);
+                let logger = Log.getLogger('');
+                logger.log(obj.level, '['+ obj.pid + '][' + obj.category + '] - ' + obj.msg);
             });
 
         });
@@ -49,8 +49,9 @@ class LogService {
         let port = opts.port || 9875;
         this.app.listen(port);
 
-        let logger = Log.getLogger('log');
-        logger.log('fatal', 'Log service start in port : ' + port);
+        let logger = Log.getLogger('');
+        logger.log('fatal', '[' + process.pid + '][log] - ' + '###################################');
+        logger.log('fatal', '[' + process.pid + '][log] - ' + 'Log service start in port : ' + port);
     }
 }
 
