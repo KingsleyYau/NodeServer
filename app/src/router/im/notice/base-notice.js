@@ -4,8 +4,7 @@
 * */
 
 // 日志
-const Log = require('../../../lib/log');
-let logger = Log.getLogger('im');
+const appLog = require('../../../lib/app-log').AppLog.getInstance();
 // 公共库
 const Common = require('../../../lib/common');
 
@@ -36,9 +35,9 @@ module.exports = class BaseNotice {
 
         try {
             user.websocket.send(json);
-            logger.debug('[' + user.socketId + ']-BaseNotice.send: ', json);
+            appLog.log('im', 'debug', '[' + user.socketId + ']-BaseNotice.send: ', json);
         } catch (err) {
-            logger.debug('[' + user.socketId + ']-BaseNotice.send, error: ', err.message);
+            appLog.log('im', 'debug', '[' + user.socketId + ']-BaseNotice.send, error: ', err.message);
         }
     }
 }

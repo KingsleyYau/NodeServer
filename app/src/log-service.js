@@ -8,13 +8,9 @@ const jsonParser = require('socket.io-json-parser');
 // 项目公共库
 const Log = require('./lib/log');
 const Common = require('./lib/common');
-// 项目接口
-const loginRouter = require('./router/im/main-router');
 
-module.exports = class ImService {
+class LogService {
     constructor() {
-        // 创建日志
-        this.logger = Log.getLogger('im');
         // 创建异步框架
         this.koa = new Koa();
         this.app = Http.createServer(this.koa.callback());
@@ -31,20 +27,16 @@ module.exports = class ImService {
             // 所有中间件处理完成
         });
 
-        // 增加路由
-        this.koa.use(loginRouter.routes());
-
         // socket连接
         this.io.on('connection', (socket) => {
-            this.logger.info('New client connected');
-            this.io.emit('Connect', 'Hello Client');
-
-            socket.on('Msg', (msg) => {
-                this.logger.info('Recv msg: ' + msg);
+            socket.on('disconnect', () => {
             });
 
-            socket.on('disconnect', () => {
-                console.log('Client disconnected');
+            socket.on('log', (obj) => {
+                let json = JSON.stringify(obj);
+
+                let logger = Log.getLogger(obj.category);
+                logger.log(obj.level, '[pid:' + obj.pid + '] - ' + obj.msg);
             });
 
         });
@@ -54,8 +46,13 @@ module.exports = class ImService {
         // 启动服务器
         opts = opts || {};
 
-        let port = opts.port || 9877;
+        let port = opts.port || 9875;
         this.app.listen(port);
-        this.logger.fatal('Im service start in port : ' + port);
+
+        let logger = Log.getLogger('log');
+        logger.log('fatal', 'Log service start in port : ' + port);
     }
 }
+
+let service = new LogService();
+service.start();

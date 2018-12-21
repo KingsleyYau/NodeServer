@@ -11,7 +11,9 @@ const logger = Log.getLogger('main');
 const HttpService = require('./http-service');
 // Im服务
 const ImService = require('./im-service');
-// const ImService = require('./socketio-service');
+
+// 日志服务
+const appLog = require('./lib/app-log').AppLog.getInstance();
 
 let port = 9876;
 // 启动Http
@@ -22,4 +24,4 @@ http.start({ port:port} );
 im = new ImService();
 im.start({ port:port + 1});
 
-logger.fatal('Server start finish');
+appLog.log('main', 'fatal', 'Server start finish, pid : ' + process.pid + ', env : ' + process.env.NODE_ENV + ', instance : ' + process.env.INSTANCE_ID);

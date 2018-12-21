@@ -4,8 +4,7 @@
 * */
 
 // 日志
-const Log = require('../../lib/log');
-let logger = Log.getLogger('im');
+const appLog = require('../../lib/app-log').AppLog.getInstance();
 // 公共库
 const Common = require('../../lib/common');
 
@@ -16,7 +15,6 @@ const OnlineUserManager = require('../../lib/online-users').OnlineUserManager;
 const BaseHandler = require('./base-handler');
 
 module.exports = class LoginHandler extends BaseHandler {
-
     constructor() {
         super();
 
@@ -29,7 +27,7 @@ module.exports = class LoginHandler extends BaseHandler {
 
     async handle(ctx, reqData) {
         return await new Promise(function (resolve, reject) {
-            logger.info('[' + ctx.socketId + ']-LoginHandler.handle');
+            appLog.log('im', 'info', '[' + ctx.socketId + ']-LoginHandler.handle');
 
             let user = new User(ctx.socketId, ctx.websocket);
             OnlineUserManager.getInstance().addUser(user);

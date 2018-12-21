@@ -6,8 +6,7 @@
 const Router = require('koa-router');
 
 // 日志
-const Log = require('../../lib/log');
-let logger = Log.getLogger('im');
+const appLog = require('../../lib/app-log').AppLog.getInstance();
 
 // 公共库
 const Common = require('../../lib/common');
@@ -32,12 +31,13 @@ mainRouter.all('/', async (ctx, next) => {
     // 等待异步接口
     await new Promise(function (resolve, reject) {
         ctx.websocket.on('message', async function (message) {
-            logger.info('[' + ctx.socketId + ']-Request, ' + message);
+            appLog.log('im', 'info', '[' + ctx.socketId + ']-Request, ' + message);
 
             let data = '';
             let handlerRespond = {};
             let handler = new BaseHandler();
 
+            // 路由分发
             let reqData = JSON.parse(message);
             if( reqData.route == LoginHandler.getRoute() ) {
                 handler = new LoginHandler();
@@ -53,10 +53,11 @@ mainRouter.all('/', async (ctx, next) => {
                 handler = new SendMsgHandler();
             }
 
+            // 统一处理返回
             await handler.handle(ctx, reqData).then( (respond) => {
                 handlerRespond = respond;
             }).catch( (err) => {
-                logger.info('[' + ctx.socketId + ']-Handle, error: ', err.message + ', Stack: ' + err.stack);
+                appLog.log('im', 'info', '[' + ctx.socketId + ']-Handle, error: ', err.message + ', Stack: ' + err.stack);
             });
 
             if( !Common.isNull(handlerRespond.resData) && handlerRespond.resData != '' ) {
@@ -64,7 +65,7 @@ mainRouter.all('/', async (ctx, next) => {
                 let json = '';
                 json = JSON.stringify(handlerRespond.resData);
                 ctx.websocket.send(json);
-                logger.info('[' + ctx.socketId + ']-Respond, ' + json);
+                appLog.log('im', 'info', '[' + ctx.socketId + ']-Respond, ' + json);
             }
 
             if(handlerRespond.isKick) {
@@ -76,7 +77,7 @@ mainRouter.all('/', async (ctx, next) => {
         })
 
         ctx.websocket.on('close', function (err) {
-            logger.info('[' + ctx.socketId + ']-Close: ' + err);
+            appLog.log('im', 'info', '[' + ctx.socketId + ']-Close: ' + err);
 
             let user = OnlineUserManager.getInstance().getUser(ctx.socketId);
             let roomManager = RoomMananger.getInstance();
@@ -87,7 +88,7 @@ mainRouter.all('/', async (ctx, next) => {
         });
 
         ctx.websocket.on('error', function (err) {
-            logger.info('[' + ctx.socketId + ']-Error, error: ' + err);
+            appLog.log('im', 'info', '[' + ctx.socketId + ']-Error, error: ' + err);
 
             let user = OnlineUserManager.getInstance().getUser(ctx.socketId);
             let roomManager = RoomMananger.getInstance();
@@ -99,7 +100,7 @@ mainRouter.all('/', async (ctx, next) => {
 
     }.bind(this)).then().catch(
         (err) => {
-            logger.info('[' + ctx.socketId + ']-Unknow, error: ' + err);
+            appLog.log('im', 'info', '[' + ctx.socketId + ']-Unknow, error: ' + err);
 
             let user = OnlineUserManager.getInstance().getUser(ctx.socketId);
             let roomManager = RoomMananger.getInstance();

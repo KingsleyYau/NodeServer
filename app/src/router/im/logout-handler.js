@@ -4,9 +4,8 @@
 * */
 
 // 日志
-const Log = require('../../lib/log');
-let logger = Log.getLogger('im');
-
+const appLog = require('../../lib/app-log').AppLog.getInstance();
+// 公共库
 const Common = require('../../lib/common');
 
 // 用户
@@ -25,7 +24,7 @@ module.exports = class LogoutHandler extends BaseHandler {
 
     async handle(ctx, reqData) {
         return await new Promise(function (resolve, reject) {
-            logger.info('[' + ctx.socketId + ']-LogoutHandler.handle');
+            appLog.log('im', 'info', '[' + ctx.socketId + ']-LogoutHandler.handle');
 
             let user = this.getBaseRespond(ctx, reqData);
             if( !Common.isNull(user)  ) {

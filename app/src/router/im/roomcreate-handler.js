@@ -4,8 +4,7 @@
 * */
 
 // 日志
-const Log = require('../../lib/log');
-let logger = Log.getLogger('im');
+const appLog = require('../../lib/app-log').AppLog.getInstance();
 
 const Common = require('../../lib/common');
 
@@ -27,7 +26,7 @@ module.exports = class RoomCreateHandler extends BaseHandler {
 
     async handle(ctx, reqData) {
         return await new Promise(function (resolve, reject) {
-            logger.info('[' + ctx.socketId + ']-RoomCreateHandler.handle');
+            appLog.log('im', 'info', '[' + ctx.socketId + ']-RoomCreateHandler.handle');
 
             let roomManager = RoomMananger.getInstance();
             let room = roomManager.getRoom(reqData.req_data.roomid);

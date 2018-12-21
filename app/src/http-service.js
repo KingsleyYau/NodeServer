@@ -4,6 +4,7 @@
 
 // http服务
 const Http = require('http');
+Http.globalAgent.maxSockets = Infinity;
 const Https = require('https');
 // 异步框架
 const Koa = require('koa');
@@ -13,7 +14,7 @@ const Serve = require('koa-static');
 const Fs = require('fs');
 const Path = require('path');
 // 项目公共库
-const Log = require('./lib/log');
+const appLog = require('./lib/app-log').AppLog.getInstance();
 const Session = require('./lib/session');
 const Common = require('./lib/common');
 // 项目接口
@@ -21,8 +22,6 @@ const loginRouter = require('./router/http/login-router');
 
 module.exports = class HttpService {
     constructor() {
-        // 创建日志
-        this.logger = Log.getLogger('http');
         // 创建异步框架
         this.app = new Koa();
 
@@ -45,7 +44,7 @@ module.exports = class HttpService {
                 ctx.session.count++;
             }
 
-            this.logger.info('[' + ctx.socketId + ']-Request' + ' (' + ctx.session.count + '), ' + ctx.request.url);
+            appLog.log('http', 'info', '[' + ctx.socketId + ']-Request' + ' (' + ctx.session.count + '), ' + ctx.request.url);
 
             // 等待其他中间件处理的异步返回
             await next();
@@ -62,6 +61,7 @@ module.exports = class HttpService {
 
         let port = opts.port || 9876;
         Http.createServer(this.app.callback()).listen(port);
-        this.logger.fatal('Http service start in port : ' + port);
+
+        appLog.log('http', 'fatal', 'Http service start in port : ' + port);
     }
 }

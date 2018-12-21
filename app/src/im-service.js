@@ -7,6 +7,7 @@ const Fs = require('fs');
 const Path = require('path');
 // 项目公共库
 const Log = require('./lib/log');
+const appLog = require('./lib/app-log').AppLog.getInstance();
 const Session = require('./lib/session');
 const Common = require('./lib/common');
 // 项目接口
@@ -41,6 +42,7 @@ module.exports = class ImService {
 
         let port = opts.port || 9877;
         this.app.listen(port);
-        this.logger.fatal('Im service start in port : ' + port);
+
+        appLog.log('im', 'fatal', 'Im service start in port : ' + port);
     }
 }

@@ -3,15 +3,14 @@
   "version": "1.0.0",
   "main": "http_main.js",
   "scripts": {
-    "build": "babel src -d dist",
-    "start": "npm run build && node dist/http_main.js"
+    "build": "npm install",
+    "start": "node ./src/server-main.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "freeswitch-esl": "^2.0.0",
     "koa": "^2.6.2",
     "koa-bodyparser": "^4.2.1",
     "koa-cors": "0.0.16",
@@ -23,7 +22,9 @@
     "log4js": "^3.0.6",
     "mysql": "^2.16.0",
     "path": "^0.12.7",
+    "pm2-intercom": "^1.0.0",
     "socket.io": "^2.2.0",
-    "socket.io-json-parser": "^2.1.0"
+    "socket.io-json-parser": "^2.1.0",
+    "socket.io-parser": "^3.3.0"
   }
 }

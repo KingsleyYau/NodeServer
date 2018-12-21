@@ -1,5 +1,6 @@
 // 日志
 const Log = require('../../lib/log');
+const appLog = require('../../lib/app-log').AppLog.getInstance();
 let logger = Log.getLogger('http');
 
 // 路由
@@ -25,15 +26,14 @@ loginRouter.all('/login', async (ctx, next) => {
 
     ctx.body = respond;
 
-    this.logger.info('[' + ctx.socketId + ']-Respond' + ' (' + ctx.session.count + '), ' + ctx.request.url);
+    appLog.log('http', 'info', '[' + ctx.socketId + ']-Respond' + ' (' + ctx.session.count + '), ' + ctx.request.url);
+    // this.logger.info('[' + ctx.socketId + ']-Respond' + ' (' + ctx.session.count + '), ' + ctx.request.url);
 });
 
 loginRouter.all('/test', (ctx, next) => {
     // 等待异步接口
     let respond = 'test';
     ctx.body = respond;
-
-    // logger.info('Send Respond: ' + ctx.request.url + ', SessionId: ' + ctx.session.sessionId + ' (' + ctx.session.count + ')');
 });
 
 module.exports = loginRouter;
