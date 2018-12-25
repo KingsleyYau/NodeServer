@@ -16,7 +16,7 @@ const BaseNotice = require('./base-notice');
 module.exports = class RoomInNotice extends BaseNotice {
     constructor(fromUser) {
         super();
-        this.notice.noticeData.req_data.userid = fromUser.socketId;
+        this.notice.noticeData.req_data.userId = fromUser.socketId;
     }
 
     static getRoute() {

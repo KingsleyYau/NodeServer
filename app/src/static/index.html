@@ -42,9 +42,10 @@ function connect() {
 
         if( typeof(obj.errno) == "undefined" || obj.errno == 0 ) {
             if(obj.route == 'imLogin/login') {
-                $("[id=socketId]").html(obj.data.socketid);
+                $("[id=userId]").html(obj.data.userId);
+                $("[id=socketId]").html(obj.data.socketId);
             } else if(obj.route == 'imMan/roomIn') {
-                $("[id=roomId]").html(obj.data.roomid);
+                $("[id=roomId]").html(obj.data.roomId);
             } else if(obj.route == 'imMan/roomOut') {
                 $("[id=roomId]").html("No Room");
             } else if(obj.route == 'imShare/sendChatNotice') {
@@ -72,7 +73,8 @@ function login() {
     obj = {
         route:'imLogin/login',
         req_data:{
-            sessionid:'session123456',
+            userId:'max',
+            sessionId:'session123456',
             pagename:7
         }
     }
@@ -106,29 +108,29 @@ function roomIn() {
         route:'imMan/roomIn',
         req_data:{
             token:'token123456',
-            roomid:'0'
+            roomId:'0'
         }
     }
     send(obj);
 }
 
-function roomOut(roomid) {
+function roomOut(roomId) {
     obj = {
         route:'imMan/roomOut',
         req_data:{
             token:'token123456',
-            roomid:roomid
+            roomId:roomId
         }
     }
     send(obj);
 }
 
-function sendMsg(roomid, msg) {
+function sendMsg(roomId, msg) {
     obj = {
         route:'imShare/sendLiveChat',
         req_data:{
             token:'token123456',
-            roomid:roomid,
+            roomId:roomId,
             msg:msg
         }
     }
@@ -158,6 +160,7 @@ connect();
 <body>
 <div id="">
     <div id="login">
+        socketId : <lable id="userId">Not Connected</lable><br>
         socketId : <lable id="socketId">Not Connected</lable>
         <button onclick="login()">login</button>
         <button onclick="logout()">logout</button>

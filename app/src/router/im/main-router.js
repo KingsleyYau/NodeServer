@@ -31,7 +31,7 @@ mainRouter.all('/', async (ctx, next) => {
     // 等待异步接口
     await new Promise(function (resolve, reject) {
         ctx.websocket.on('message', async function (message) {
-            appLog.log('im', 'info', '[' + ctx.socketId + ']-Request, ' + message);
+            appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.Request, ' + message);
 
             let data = '';
             let handlerRespond = {};
@@ -57,7 +57,7 @@ mainRouter.all('/', async (ctx, next) => {
             await handler.handle(ctx, reqData).then( (respond) => {
                 handlerRespond = respond;
             }).catch( (err) => {
-                appLog.log('im', 'info', '[' + ctx.socketId + ']-Handle, error: ', err.message + ', Stack: ' + err.stack);
+                appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.Handle, err: ', err.message + ', Stack: ' + err.stack);
             });
 
             if( !Common.isNull(handlerRespond.resData) && handlerRespond.resData != '' ) {
@@ -65,7 +65,7 @@ mainRouter.all('/', async (ctx, next) => {
                 let json = '';
                 json = JSON.stringify(handlerRespond.resData);
                 ctx.websocket.send(json);
-                appLog.log('im', 'info', '[' + ctx.socketId + ']-Respond, ' + json);
+                appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.Respond, ' + json);
             }
 
             if(handlerRespond.isKick) {
@@ -77,7 +77,7 @@ mainRouter.all('/', async (ctx, next) => {
         })
 
         ctx.websocket.on('close', function (err) {
-            appLog.log('im', 'info', '[' + ctx.socketId + ']-Close: ' + err);
+            appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.Close: ' + err);
 
             let user = OnlineUserManager.getInstance().getUser(ctx.socketId);
             let roomManager = RoomMananger.getInstance();
@@ -88,7 +88,7 @@ mainRouter.all('/', async (ctx, next) => {
         });
 
         ctx.websocket.on('error', function (err) {
-            appLog.log('im', 'info', '[' + ctx.socketId + ']-Error, error: ' + err);
+            appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.Error, error: ' + err);
 
             let user = OnlineUserManager.getInstance().getUser(ctx.socketId);
             let roomManager = RoomMananger.getInstance();
@@ -100,7 +100,7 @@ mainRouter.all('/', async (ctx, next) => {
 
     }.bind(this)).then().catch(
         (err) => {
-            appLog.log('im', 'info', '[' + ctx.socketId + ']-Unknow, error: ' + err);
+            appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.Unknow, error: ' + err);
 
             let user = OnlineUserManager.getInstance().getUser(ctx.socketId);
             let roomManager = RoomMananger.getInstance();

@@ -5,12 +5,21 @@
 
 // 公共库
 const Common = require('./common');
+// 日志
+const appLog = require('./app-log').AppLog.getInstance();
+// Model的Keys
+const DBModelKeys = require('../model/model-keys');
 
 class User {
-    constructor(socketId, websocket) {
+    constructor(socketId, websocket, userId) {
         this.noticeId = 0;
+        this.userId = userId;
         this.socketId = socketId;
         this.websocket = websocket;
+    }
+
+    key() {
+        return DBModelKeys.RedisKey.OnlineKey + '-' + this.userId;
     }
 }
 

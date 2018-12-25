@@ -21,7 +21,7 @@ class AppLog {
 
     log(category, level, msg) {
         if( typeof(process.env.NODE_ENV) == "undefined" ) {
-            // 本地打印
+            // 本地打印日志
             let logger = Log.getLogger(category);
             logger.log(level, msg);
 

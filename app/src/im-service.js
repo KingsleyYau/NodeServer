@@ -25,7 +25,8 @@ module.exports = class ImService {
         this.app.ws.use( async (ctx, next) => {
             // return `next` to pass the context (ctx) on to the next ws middleware
 
-            ctx.socketId = Math.random().toString(36).substr(2);
+            // 新的连接, 生成SocketId
+            ctx.socketId = 'SOCKETID-' + Math.random().toString(36).substr(2).toLocaleUpperCase();
 
             // 等待其他中间件处理的异步返回
             await next();

@@ -31,7 +31,7 @@ module.exports = class RoomInHandler extends BaseHandler {
             let user = this.getBaseRespond(ctx, reqData);
             if( !Common.isNull(user) ) {
                 let roomManager = RoomMananger.getInstance();
-                let room = roomManager.getRoom(reqData.req_data.roomid);
+                let room = roomManager.getRoom(reqData.req_data.roomId);
                 if( !Common.isNull(room) ) {
                     room.addUser(user);
                     this.respond.resData.data = room.getData();

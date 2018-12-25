@@ -1,0 +1,147 @@
+2918:C 24 Dec 2018 09:22:11.576 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+2918:C 24 Dec 2018 09:22:11.576 # Redis version=5.0.2, bits=64, commit=00000000, modified=0, pid=2918, just started
+2918:C 24 Dec 2018 09:22:11.577 # Configuration loaded
+2919:M 24 Dec 2018 09:22:11.579 * Increased maximum number of open files to 10032 (it was originally set to 256).
+                _._                                                  
+           _.-``__ ''-._                                             
+      _.-``    `.  `_.  ''-._           Redis 5.0.2 (00000000/0) 64 bit
+  .-`` .-```.  ```\/    _.,_ ''-._                                   
+ (    '      ,       .-`  | `,    )     Running in standalone mode
+ |`-._`-...-` __...-.``-._|'` _.-'|     Port: 6379
+ |    `-._   `._    /     _.-'    |     PID: 2919
+  `-._    `-._  `-./  _.-'    _.-'                                   
+ |`-._`-._    `-.__.-'    _.-'_.-'|                                  
+ |    `-._`-._        _.-'_.-'    |           http://redis.io        
+  `-._    `-._`-.__.-'_.-'    _.-'                                   
+ |`-._`-._    `-.__.-'    _.-'_.-'|                                  
+ |    `-._`-._        _.-'_.-'    |                                  
+  `-._    `-._`-.__.-'_.-'    _.-'                                   
+      `-._    `-.__.-'    _.-'                                       
+          `-._        _.-'                                           
+              `-.__.-'                                               
+
+2919:M 24 Dec 2018 09:22:11.581 # Server initialized
+2919:M 24 Dec 2018 09:22:11.581 * DB loaded from disk: 0.000 seconds
+2919:M 24 Dec 2018 09:22:11.581 * Ready to accept connections
+2919:M 24 Dec 2018 09:48:56.402 # User requested shutdown...
+2919:M 24 Dec 2018 09:48:56.403 * Saving the final RDB snapshot before exiting.
+2919:M 24 Dec 2018 09:48:56.404 * DB saved on disk
+2919:M 24 Dec 2018 09:48:56.405 * Removing the pid file.
+2919:M 24 Dec 2018 09:48:56.405 # Redis is now ready to exit, bye bye...
+3495:C 24 Dec 2018 09:51:52.042 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+3495:C 24 Dec 2018 09:51:52.055 # Redis version=5.0.2, bits=64, commit=00000000, modified=0, pid=3495, just started
+3495:C 24 Dec 2018 09:51:52.055 # Configuration loaded
+3496:M 24 Dec 2018 09:51:52.057 * Increased maximum number of open files to 10032 (it was originally set to 256).
+                _._                                                  
+           _.-``__ ''-._                                             
+      _.-``    `.  `_.  ''-._           Redis 5.0.2 (00000000/0) 64 bit
+  .-`` .-```.  ```\/    _.,_ ''-._                                   
+ (    '      ,       .-`  | `,    )     Running in standalone mode
+ |`-._`-...-` __...-.``-._|'` _.-'|     Port: 6379
+ |    `-._   `._    /     _.-'    |     PID: 3496
+  `-._    `-._  `-./  _.-'    _.-'                                   
+ |`-._`-._    `-.__.-'    _.-'_.-'|                                  
+ |    `-._`-._        _.-'_.-'    |           http://redis.io        
+  `-._    `-._`-.__.-'_.-'    _.-'                                   
+ |`-._`-._    `-.__.-'    _.-'_.-'|                                  
+ |    `-._`-._        _.-'_.-'    |                                  
+  `-._    `-._`-.__.-'_.-'    _.-'                                   
+      `-._    `-.__.-'    _.-'                                       
+          `-._        _.-'                                           
+              `-.__.-'                                               
+
+3496:M 24 Dec 2018 09:51:52.059 # Server initialized
+3496:M 24 Dec 2018 09:51:52.059 * DB loaded from disk: 0.000 seconds
+3496:M 24 Dec 2018 09:51:52.059 * Ready to accept connections
+3496:M 24 Dec 2018 11:39:00.802 * 1 changes in 900 seconds. Saving...
+3496:M 24 Dec 2018 11:39:00.804 * Background saving started by pid 7876
+7876:C 24 Dec 2018 11:39:00.808 * DB saved on disk
+3496:M 24 Dec 2018 11:39:00.906 * Background saving terminated with success
+3496:M 24 Dec 2018 11:54:01.035 * 1 changes in 900 seconds. Saving...
+3496:M 24 Dec 2018 11:54:01.037 * Background saving started by pid 8333
+8333:C 24 Dec 2018 11:54:01.039 * DB saved on disk
+3496:M 24 Dec 2018 11:54:01.138 * Background saving terminated with success
+3496:M 24 Dec 2018 12:09:02.090 * 1 changes in 900 seconds. Saving...
+3496:M 24 Dec 2018 12:09:02.091 * Background saving started by pid 8585
+8585:C 24 Dec 2018 12:09:02.094 * DB saved on disk
+3496:M 24 Dec 2018 12:09:02.192 * Background saving terminated with success
+3496:M 24 Dec 2018 14:20:47.395 * 1 changes in 900 seconds. Saving...
+3496:M 24 Dec 2018 14:20:47.396 * Background saving started by pid 12069
+12069:C 24 Dec 2018 14:20:47.401 * DB saved on disk
+3496:M 24 Dec 2018 14:20:47.497 * Background saving terminated with success
+3496:M 24 Dec 2018 14:44:57.436 * 1 changes in 900 seconds. Saving...
+3496:M 24 Dec 2018 14:44:57.481 * Background saving started by pid 22422
+22422:C 24 Dec 2018 14:44:57.485 * DB saved on disk
+3496:M 24 Dec 2018 14:44:57.583 * Background saving terminated with success
+3496:M 24 Dec 2018 14:49:58.022 * 10 changes in 300 seconds. Saving...
+3496:M 24 Dec 2018 14:49:58.024 * Background saving started by pid 22525
+22525:C 24 Dec 2018 14:49:58.028 * DB saved on disk
+3496:M 24 Dec 2018 14:49:58.125 * Background saving terminated with success
+3496:M 24 Dec 2018 15:01:13.546 * 10 changes in 300 seconds. Saving...
+3496:M 24 Dec 2018 15:01:13.549 * Background saving started by pid 24502
+24502:C 24 Dec 2018 15:01:13.551 * DB saved on disk
+3496:M 24 Dec 2018 15:01:13.650 * Background saving terminated with success
+3496:M 24 Dec 2018 15:06:14.096 * 10 changes in 300 seconds. Saving...
+3496:M 24 Dec 2018 15:06:14.097 * Background saving started by pid 26700
+26700:C 24 Dec 2018 15:06:14.098 * DB saved on disk
+3496:M 24 Dec 2018 15:06:14.198 * Background saving terminated with success
+3496:M 24 Dec 2018 15:20:20.541 * 10 changes in 300 seconds. Saving...
+3496:M 24 Dec 2018 15:20:20.544 * Background saving started by pid 30776
+30776:C 24 Dec 2018 15:20:20.547 * DB saved on disk
+3496:M 24 Dec 2018 15:20:20.646 * Background saving terminated with success
+3496:M 24 Dec 2018 15:35:21.076 * 1 changes in 900 seconds. Saving...
+3496:M 24 Dec 2018 15:35:21.078 * Background saving started by pid 30980
+30980:C 24 Dec 2018 15:35:21.079 * DB saved on disk
+3496:M 24 Dec 2018 15:35:21.180 * Background saving terminated with success
+3496:M 24 Dec 2018 15:50:22.071 * 1 changes in 900 seconds. Saving...
+3496:M 24 Dec 2018 15:50:22.073 * Background saving started by pid 31324
+31324:C 24 Dec 2018 15:50:22.077 * DB saved on disk
+3496:M 24 Dec 2018 15:50:22.175 * Background saving terminated with success
+3496:M 24 Dec 2018 16:05:23.085 * 1 changes in 900 seconds. Saving...
+3496:M 24 Dec 2018 16:05:23.088 * Background saving started by pid 36465
+36465:C 24 Dec 2018 16:05:23.090 * DB saved on disk
+3496:M 24 Dec 2018 16:05:23.189 * Background saving terminated with success
+3496:signal-handler (1545645709) Received SIGTERM scheduling shutdown...
+3496:M 24 Dec 2018 18:01:49.745 # User requested shutdown...
+3496:M 24 Dec 2018 18:01:49.745 * Saving the final RDB snapshot before exiting.
+3496:M 24 Dec 2018 18:01:49.748 * DB saved on disk
+3496:M 24 Dec 2018 18:01:49.748 * Removing the pid file.
+3496:M 24 Dec 2018 18:01:49.751 # Redis is now ready to exit, bye bye...
+6159:C 25 Dec 2018 09:58:16.381 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+6159:C 25 Dec 2018 09:58:16.382 # Redis version=5.0.2, bits=64, commit=00000000, modified=0, pid=6159, just started
+6159:C 25 Dec 2018 09:58:16.382 # Configuration loaded
+6160:M 25 Dec 2018 09:58:16.384 * Increased maximum number of open files to 10032 (it was originally set to 256).
+                _._                                                  
+           _.-``__ ''-._                                             
+      _.-``    `.  `_.  ''-._           Redis 5.0.2 (00000000/0) 64 bit
+  .-`` .-```.  ```\/    _.,_ ''-._                                   
+ (    '      ,       .-`  | `,    )     Running in standalone mode
+ |`-._`-...-` __...-.``-._|'` _.-'|     Port: 6379
+ |    `-._   `._    /     _.-'    |     PID: 6160
+  `-._    `-._  `-./  _.-'    _.-'                                   
+ |`-._`-._    `-.__.-'    _.-'_.-'|                                  
+ |    `-._`-._        _.-'_.-'    |           http://redis.io        
+  `-._    `-._`-.__.-'_.-'    _.-'                                   
+ |`-._`-._    `-.__.-'    _.-'_.-'|                                  
+ |    `-._`-._        _.-'_.-'    |                                  
+  `-._    `-._`-.__.-'_.-'    _.-'                                   
+      `-._    `-.__.-'    _.-'                                       
+          `-._        _.-'                                           
+              `-.__.-'                                               
+
+6160:M 25 Dec 2018 09:58:16.389 # Server initialized
+6160:M 25 Dec 2018 09:58:16.390 * Ready to accept connections
+6160:M 25 Dec 2018 10:13:17.026 * 1 changes in 900 seconds. Saving...
+6160:M 25 Dec 2018 10:13:17.029 * Background saving started by pid 7383
+7383:C 25 Dec 2018 10:13:17.031 * DB saved on disk
+6160:M 25 Dec 2018 10:13:17.131 * Background saving terminated with success
+6160:M 25 Dec 2018 10:29:03.644 * 1 changes in 900 seconds. Saving...
+6160:M 25 Dec 2018 10:29:03.647 * Background saving started by pid 9919
+9919:C 25 Dec 2018 10:29:03.649 * DB saved on disk
+6160:M 25 Dec 2018 10:29:03.749 * Background saving terminated with success
+6160:M 25 Dec 2018 10:44:04.026 * 1 changes in 900 seconds. Saving...
+6160:M 25 Dec 2018 10:44:04.028 * Background saving started by pid 10294
+10294:C 25 Dec 2018 10:44:04.031 * DB saved on disk
+6160:M 25 Dec 2018 10:44:04.130 * Background saving terminated with success
+6160:M 25 Dec 2018 10:58:57.416 * DB saved on disk
+6160:M 25 Dec 2018 11:00:55.730 * DB saved on disk

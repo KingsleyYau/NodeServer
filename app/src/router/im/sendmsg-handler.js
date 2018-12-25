@@ -34,7 +34,7 @@ module.exports = class SendMsgHandler extends BaseHandler {
             let bFlag = false;
             let user = this.getBaseRespond(ctx, reqData);
             let roomManager = RoomMananger.getInstance();
-            let room = roomManager.getRoom(reqData.req_data.roomid);
+            let room = roomManager.getRoom(reqData.req_data.roomId);
             if( !Common.isNull(user)  ) {
                 if( !Common.isNull(room) ) {
                     bFlag = true;

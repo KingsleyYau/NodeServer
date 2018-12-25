@@ -32,7 +32,7 @@ module.exports = class RoomOutHandler extends BaseHandler {
             let user = this.getBaseRespond(ctx, reqData);
             if( !Common.isNull(user)  ) {
                 let roomManager = RoomMananger.getInstance();
-                let room = roomManager.getRoom(reqData.req_data.roomid);
+                let room = roomManager.getRoom(reqData.req_data.roomId);
                 if( !Common.isNull(room) ) {
                     room.delUser(user);
                 } else {

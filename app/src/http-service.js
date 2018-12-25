@@ -37,7 +37,7 @@ module.exports = class HttpService {
             let sessionId = ctx.session.sessionId;
             if( Common.isNull(sessionId) ) {
                 ctx.session = {
-                    sessionId: Math.random().toString(36).substr(2),
+                    sessionId: 'SESSIONID-' + Math.random().toString(36).substr(2).toLocaleUpperCase(),
                     count: 0
                 }
             } else {

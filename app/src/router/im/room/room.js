@@ -42,7 +42,7 @@ class Room {
 
     getData() {
         let data = {
-            roomid:this.roomId
+            roomId:this.roomId
         }
         return data;
     }

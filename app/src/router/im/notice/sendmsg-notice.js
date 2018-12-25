@@ -17,8 +17,8 @@ module.exports = class SendMsgNotice extends BaseNotice {
     constructor(fromUser, msg) {
         super();
 
-        this.notice.noticeData.req_data.userid = fromUser.socketId;
-        this.notice.noticeData.req_data.msg = '[' + fromUser.socketId + ']: ' + msg;
+        this.notice.noticeData.req_data.userId = fromUser.userId;
+        this.notice.noticeData.req_data.msg = '[' + fromUser.userId + '-(' + fromUser.socketId + ')]: ' + msg;
     }
 
     static getRoute() {
