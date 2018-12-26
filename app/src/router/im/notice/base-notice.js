@@ -34,10 +34,10 @@ module.exports = class BaseNotice {
         let json = JSON.stringify(this.notice.noticeData);
 
         try {
+            appLog.log('im', 'info', '[' + user.socketId + ']-BaseNotice.send: ' + json);
             user.websocket.send(json);
-            appLog.log('im', 'debug', '[' + user.socketId + ']-BaseNotice.send: ', json);
         } catch (err) {
-            appLog.log('im', 'debug', '[' + user.socketId + ']-BaseNotice.send, error: ', err.message);
+            appLog.log('im', 'debug', '[' + user.socketId + ']-BaseNotice.send, error: ' + err.message);
         }
     }
 }

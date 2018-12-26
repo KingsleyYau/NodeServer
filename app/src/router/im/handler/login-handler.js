@@ -4,13 +4,13 @@
 * */
 
 // 日志
-const appLog = require('../../lib/app-log').AppLog.getInstance();
+const appLog = require('../../../lib/app-log').AppLog.getInstance();
 // 公共库
-const Common = require('../../lib/common');
+const Common = require('../../../lib/common');
 
 // 用户
-const User = require('../../lib/users').User;
-const OnlineUserManager = require('../../lib/online-users').OnlineUserManager;
+const User = require('../../../lib/users').User;
+const OnlineUserManager = require('../../../lib/online-users').OnlineUserManager;
 // 业务管理器
 const BaseHandler = require('./base-handler');
 
@@ -32,10 +32,11 @@ module.exports = class LoginHandler extends BaseHandler {
             let user = null;
 
             if( !Common.isNull(reqData.req_data.userId) ) {
-                user = new User(ctx.socketId, ctx.websocket, reqData.req_data.userId);
+                let curTime = new Date();
+                user = new User(ctx.socketId, ctx.websocket, reqData.req_data.userId, ctx.connectTtime, curTime.getTime());
 
                 // 等待处理
-                await OnlineUserManager.getInstance().addUser(user);
+                await OnlineUserManager.getInstance().login(user);
             }
 
             user = this.getBaseRespond(ctx, reqData);

@@ -28,27 +28,27 @@ class RedisClient {
         this.client = Redis.createClient(DBConfig.redis.port, DBConfig.redis.host);
 
         this.client.on("ready", () => {
-            appLog.log('common', 'warn', 'Redis.ready');
+            appLog.log('common', 'warn', 'Redis.ready, ' + DBConfig.redis.host + ':' + DBConfig.redis.port);
         });
 
         this.client.on("connect", () => {
-            appLog.log('common', 'warn', 'Redis.connect');
+            appLog.log('common', 'warn', 'Redis.connect, ' + DBConfig.redis.host + ':' + DBConfig.redis.port);
         });
 
         this.client.on("reconnecting", () => {
-            appLog.log('common', 'warn', 'Redis.reconnecting');
+            appLog.log('common', 'warn', 'Redis.reconnecting, ' + DBConfig.redis.host + ':' + DBConfig.redis.port);
         });
 
         this.client.on("error", (err) => {
-            appLog.log('common', 'error', 'Redis.err, ' + err);
+            appLog.log('common', 'error', 'Redis.err, ' + DBConfig.redis.host + ':' + DBConfig.redis.port + ', error: ' + err);
         });
 
         this.client.on("end", () => {
-            appLog.log('common', 'warn', 'Redis.end');
+            appLog.log('common', 'warn', 'Redis.end, ' + DBConfig.redis.host + ':' + DBConfig.redis.port);
         });
 
         this.client.on("warning", () => {
-            appLog.log('common', 'warn', 'Redis.warning');
+            appLog.log('common', 'warn', 'Redis.warning, ' + DBConfig.redis.host + ':' + DBConfig.redis.port);
         });
     }
 }

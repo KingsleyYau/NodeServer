@@ -26,7 +26,7 @@ loginRouter.all('/login', async (ctx, next) => {
 
     ctx.body = respond;
 
-    appLog.log('http', 'info', '[' + ctx.socketId + ']-Respond' + ' (' + ctx.session.count + '), ' + ctx.request.url);
+    appLog.log('http', 'info', '[' + ctx.socketId + ']-respond, ' + ' (' + ctx.session.count + '), ' + ctx.request.url);
     // this.logger.info('[' + ctx.socketId + ']-Respond' + ' (' + ctx.session.count + '), ' + ctx.request.url);
 });
 

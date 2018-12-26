@@ -4,12 +4,12 @@
 * */
 
 // 日志
-const appLog = require('../../lib/app-log').AppLog.getInstance();
+const appLog = require('../../../lib/app-log').AppLog.getInstance();
 // 公共库
-const Common = require('../../lib/common');
+const Common = require('../../../lib/common');
 
 // 用户
-const User = require('../../lib/users').User;
+const User = require('../../../lib/users').User;
 // 业务管理器
 const BaseHandler = require('./base-handler');
 

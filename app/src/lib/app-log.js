@@ -4,6 +4,7 @@ const jsonParser = require('socket.io-json-parser');
 // 公共库
 const Log = require('./log');
 const Common = require('./common');
+const AppConfig = require('../config/app-config');
 
 class AppLog {
     static getInstance() {
@@ -14,7 +15,7 @@ class AppLog {
     }
 
     constructor() {
-        this.client = io('ws://127.0.0.1:9875', {
+        this.client = io(AppConfig.log.host + ':' + AppConfig.log.port, {
             parser:jsonParser
         });
     }

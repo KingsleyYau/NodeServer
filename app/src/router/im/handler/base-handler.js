@@ -4,12 +4,12 @@
 * */
 
 // 日志
-const appLog = require('../../lib/app-log').AppLog.getInstance();
+const appLog = require('../../../lib/app-log').AppLog.getInstance();
 // 公共库
-const Common = require('../../lib/common');
+const Common = require('../../../lib/common');
 
 // 在线用户
-const OnlineUserManager = require('../../lib/online-users').OnlineUserManager;
+const OnlineUserManager = require('../../../lib/online-users').OnlineUserManager;
 
 module.exports = class BaseHandler {
     constructor() {

@@ -11,17 +11,30 @@ const logger = Log.getLogger('main');
 const HttpService = require('./http-service');
 // Im服务
 const ImService = require('./im-service');
-
 // 日志服务
 const appLog = require('./lib/app-log').AppLog.getInstance();
 
-let port = 9876;
+// 用户
+const OnlineUserManager = require('./lib/online-users').OnlineUserManager;
+
 // 启动Http
 http = new HttpService();
-http.start({ port:port} );
+http.start();
 
 // 启动Im
 im = new ImService();
-im.start({ port:port + 1});
+im.start();
+
+function handle(signal) {
+    appLog.log('main', 'fatal', 'Server exit pid : ' + process.pid + ', env : ' + process.env.NODE_ENV + ', instance : ' + process.env.INSTANCE_ID);
+    // 清空缓存用户列表
+    OnlineUserManager.getInstance().logoutAllLocalUsers();
+    // 退出程序
+    process.exit();
+}
+
+process.on('SIGINT', handle);
+process.on('SIGTERM', handle);
+process.on('SIGTERM', handle);
 
 appLog.log('main', 'fatal', 'Server start finish, pid : ' + process.pid + ', env : ' + process.env.NODE_ENV + ', instance : ' + process.env.INSTANCE_ID);

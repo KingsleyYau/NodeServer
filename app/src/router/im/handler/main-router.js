@@ -6,15 +6,15 @@
 const Router = require('koa-router');
 
 // 日志
-const appLog = require('../../lib/app-log').AppLog.getInstance();
+const appLog = require('../../../lib/app-log').AppLog.getInstance();
 
 // 公共库
-const Common = require('../../lib/common');
+const Common = require('../../../lib/common');
 // 用户
-const User = require('../../lib/users').User;
-const OnlineUserManager = require('../../lib/online-users').OnlineUserManager;
+const User = require('../../../lib/users').User;
+const OnlineUserManager = require('../../../lib/online-users').OnlineUserManager;
 // 房间管理器
-const RoomMananger = require('./room/room').RoomManager;
+const RoomMananger = require('../room/room').RoomManager;
 
 const BaseHandler = require('./base-handler');
 const LoginHandler = require('./login-handler');
@@ -31,7 +31,7 @@ mainRouter.all('/', async (ctx, next) => {
     // 等待异步接口
     await new Promise(function (resolve, reject) {
         ctx.websocket.on('message', async function (message) {
-            appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.Request, ' + message);
+            appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.request, ' + message);
 
             let data = '';
             let handlerRespond = {};
@@ -57,7 +57,7 @@ mainRouter.all('/', async (ctx, next) => {
             await handler.handle(ctx, reqData).then( (respond) => {
                 handlerRespond = respond;
             }).catch( (err) => {
-                appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.Handle, err: ', err.message + ', Stack: ' + err.stack);
+                appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.handle, err: ', err.message + ', Stack: ' + err.stack);
             });
 
             if( !Common.isNull(handlerRespond.resData) && handlerRespond.resData != '' ) {
@@ -65,7 +65,7 @@ mainRouter.all('/', async (ctx, next) => {
                 let json = '';
                 json = JSON.stringify(handlerRespond.resData);
                 ctx.websocket.send(json);
-                appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.Respond, ' + json);
+                appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.respond, ' + json);
             }
 
             if(handlerRespond.isKick) {
@@ -77,35 +77,35 @@ mainRouter.all('/', async (ctx, next) => {
         })
 
         ctx.websocket.on('close', function (err) {
-            appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.Close: ' + err);
+            appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.close, ' + err);
 
             let user = OnlineUserManager.getInstance().getUser(ctx.socketId);
             let roomManager = RoomMananger.getInstance();
             roomManager.delUser(user);
-            OnlineUserManager.getInstance().delUser(user);
+            OnlineUserManager.getInstance().logout(user);
 
             reject(err);
         });
 
         ctx.websocket.on('error', function (err) {
-            appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.Error, error: ' + err);
+            appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.error, ' + err);
 
             let user = OnlineUserManager.getInstance().getUser(ctx.socketId);
             let roomManager = RoomMananger.getInstance();
             roomManager.delUser(user);
-            OnlineUserManager.getInstance().delUser(user);
+            OnlineUserManager.getInstance().logout(user);
 
             reject(err);
         });
 
     }.bind(this)).then().catch(
         (err) => {
-            appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.Unknow, error: ' + err);
+            appLog.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.catch, ' + err);
 
             let user = OnlineUserManager.getInstance().getUser(ctx.socketId);
             let roomManager = RoomMananger.getInstance();
             roomManager.delUser(user);
-            OnlineUserManager.getInstance().delUser(user);
+            OnlineUserManager.getInstance().logout(user);
         }
     );
 });

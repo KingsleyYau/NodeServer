@@ -11,7 +11,21 @@ var client;
 var reqId = 0;
 var roomId = 'No Room';
 
+function reset() {
+    reqId = 0;
+    roomId = 'No Room';
+
+    $("[id=status]").html('Not Connected');
+    $("[id=userId]").html('');
+    $("[id=socketId]").html('');
+    $("[id=roomId]").html("No Room");
+    $("[id=msgRecv]").html('');
+    $("[id=jsonRecv]").html('');
+}
+
 function connect() {
+    reset();
+
     client = new WebSocket('ws://192.168.88.138:9877/');
     client.binaryType = 'arraybuffer';
 
@@ -20,6 +34,7 @@ function connect() {
 
 		// var bytes = new Uint8Array([0x48, 0x65, 0x6C, 0x6C, 0x6F]); // Hello
 		// client.send(bytes.buffer);
+        $("[id=status]").html('Connected');
 
         login();
     };
@@ -27,7 +42,7 @@ function connect() {
 	client.onclose = function(ev) {
         console.log('Client onclose()');
 
-        $("[id=socketId]").html("Not Connected");
+        $("[id=status]").html('Not Connected');
 
         reconnect();
     }
@@ -65,6 +80,7 @@ function send(obj) {
         reqId++;
         return true;
     } else {
+        connect();
         return false;
     }
 }
@@ -138,18 +154,18 @@ function sendMsg(roomId, msg) {
 }
 
 function reconnect() {
-    console.log('Client reconnect()');
-    setTimeout(() => {
-        if( client.readyState == client.OPEN ) {
-            // 连接已经成功, 退出循环
-        } else if(client.readyState == client.CLOSED) {
-            // 开始连接
-            connect();
-        }  else {
-            // 继续等待重连
-            reconnect();
-        }
-    }, 5000);
+    // console.log('Client reconnect()');
+    // setTimeout(() => {
+    //     if( client.readyState == client.OPEN ) {
+    //         // 连接已经成功, 退出循环
+    //     } else if(client.readyState == client.CLOSED) {
+    //         // 开始连接
+    //         connect();
+    //     }  else {
+    //         // 继续等待重连
+    //         reconnect();
+    //     }
+    // }, 5000);
 }
 
 connect();
@@ -160,8 +176,9 @@ connect();
 <body>
 <div id="">
     <div id="login">
-        socketId : <lable id="userId">Not Connected</lable><br>
-        socketId : <lable id="socketId">Not Connected</lable>
+        status : <lable id="status">Not Connected</lable><br>
+        userId : <lable id="userId"> </lable><br>
+        socketId : <lable id="socketId"> </lable>
         <button onclick="login()">login</button>
         <button onclick="logout()">logout</button>
     </div>

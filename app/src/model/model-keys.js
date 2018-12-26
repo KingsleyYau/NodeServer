@@ -8,7 +8,11 @@ const DBModelKeys = {
         OnlineKey:'OnlineKey',
         UserKey:{
             SocketIdKey:'SocketIdKey',
-            UserIdKey:'UserIdKey'
+            UserIdKey:'UserIdKey',
+            ConnectTimeKey:'ConnectTimeKey',
+            LoginTimeKey:'LoginTimeKey',
+            ServerHostKey:'ServerHostKey',
+            ServerPortKey:'ServerPortKey',
         }
     }
 }

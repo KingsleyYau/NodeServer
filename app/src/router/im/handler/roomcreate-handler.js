@@ -4,14 +4,14 @@
 * */
 
 // 日志
-const appLog = require('../../lib/app-log').AppLog.getInstance();
-
-const Common = require('../../lib/common');
+const appLog = require('../../../lib/app-log').AppLog.getInstance();
+const Common = require('../../../lib/common');
 
 // 用户
-const User = require('../../lib/users').User;
+const User = require('../../../lib/users').User;
 // 房间管理器
-const RoomMananger = require('./room/room').RoomManager;
+const RoomMananger = require('../room/room').RoomManager;
+
 // 业务管理器
 const BaseHandler = require('./base-handler');
 

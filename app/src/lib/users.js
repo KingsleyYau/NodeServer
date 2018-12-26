@@ -7,19 +7,34 @@
 const Common = require('./common');
 // 日志
 const appLog = require('./app-log').AppLog.getInstance();
+// App配置
+const AppConfig = require('../config/app-config');
 // Model的Keys
 const DBModelKeys = require('../model/model-keys');
 
 class User {
-    constructor(socketId, websocket, userId) {
+    constructor(socketId, websocket, userId, connectTime, loginTime) {
         this.noticeId = 0;
         this.userId = userId;
         this.socketId = socketId;
         this.websocket = websocket;
+        this.connectTime = connectTime;
+        this.loginTime = loginTime;
+
+        this.serverHost = AppConfig.inApp.host;
+        let inPort = AppConfig.inApp.port;
+        if( !Common.isNull(process.env.INSTANCE_ID) ) {
+            inPort += parseInt(process.env.INSTANCE_ID);
+        }
+        this.serverPort = inPort;
     }
 
-    key() {
-        return DBModelKeys.RedisKey.OnlineKey + '-' + this.userId;
+    uniquePattern() {
+        return DBModelKeys.RedisKey.OnlineKey + '-' + this.userId + '-' + this.socketId;
+    }
+
+    userIdPattern() {
+        return DBModelKeys.RedisKey.OnlineKey + '-' + this.userId + '*';
     }
 }
 

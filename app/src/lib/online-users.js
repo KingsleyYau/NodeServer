@@ -13,6 +13,12 @@ const redisClient = require('./redis-client').RedisClient.getInstance();
 // Model的Keys
 const DBModelKeys = require('../model/model-keys');
 
+// 消息推送类
+const KickNotice = require('../router/im/notice/kick-notice');
+
+const io = require('socket.io-client');
+const jsonParser = require('socket.io-json-parser');
+
 class OnlineUserManager {
     static getInstance() {
         if( Common.isNull(OnlineUserManager.instance) ) {
@@ -25,42 +31,121 @@ class OnlineUserManager {
         this.userManager = new Users.UserManager();
     }
 
-    async addUser(user) {
+    /*
+    * 增加用户
+    * 如果已经登录, 则通知其他进程踢出, 再登录
+    *
+    * */
+    async login(user) {
         return await new Promise(function (resolve, reject) {
-            redisClient.client.exists(user.key(), (err, res) => {
-                appLog.log('im', 'info', '[' + user.userId  + ']OnlineUserManager.addUser, exists:' + res + ', err:' + err);
+            redisClient.client.keys(user.userIdPattern(), (err, res) => {
+                appLog.log('im', 'info', '[' + user.userId  + ']OnlineUserManager.login, keys: ' + res + ', err: ' + err);
 
-                if( res ) {
-                    // 如果用户已经登录, 踢下线
+                if( !Common.isNull(res) && res.length > 0 ) {
+                    for(let i = 0; i < res.length; i++){
+                        // 如果用户已经登录
+                        redisClient.client.hgetall(res[i], (err, res) => {
+                            if( res != null ) {
+                                // 获取用户登录信息成功
+                                let json = JSON.stringify(res);
+                                appLog.log('im', 'debug', '[' + user.userId  + ']OnlineUserManager.login, hgetall:' + json + ', err: ' + err);
+
+                                // 已经在本地登录, 踢掉
+                                if( res.ServerHostKey == user.serverHost && res.ServerPortKey == user.serverPort ) {
+                                    let oldUser = this.getUser(res.SocketIdKey);
+                                    if( !Common.isNull(oldUser) ) {
+                                        appLog.log('im', 'warn', '[' + user.userId  + ']OnlineUserManager.login, Kick Local User: ' + json);
+                                        let notice = new KickNotice();
+                                        notice.send(oldUser);
+                                    }
+                                } else {
+                                    // 在其他地方登录, 通知踢下线
+                                    let url = res.ServerHostKey + ':' + res.ServerPortKey;
+                                    appLog.log('im', 'warn', '[' + user.userId  + ']OnlineUserManager.login, Kick Remote User: ' + json);
+
+                                    let client = io(url, {
+                                        parser:jsonParser
+                                    });
+
+                                    client.emit('kick', {
+                                        id:0,
+                                        req_data:res
+                                    });
+                                }
+                            }
+                        });
+                    }
+
+                    // 更新登录信息
+                    this.loginLocal(user, resolve);
+
+                } else {
+                    // 更新登录信息
+                    this.loginLocal(user, resolve);
                 }
 
-                // 更新登录信息
-                redisClient.client.hmset(user.key(),
-                    DBModelKeys.RedisKey.UserKey.SocketIdKey, user.socketId,
-                    DBModelKeys.RedisKey.UserKey.UserIdKey, user.userId,
-                    (err, res) => {
-                    appLog.log('im', 'info', '[' + user.userId  + ']OnlineUserManager.addUser, add:' + res + ', err:' + err);
-
-                    // 增加到本地内存
-                    this.userManager.addUser(user);
-
-                    // 登录处理完成
-                    resolve();
-                });
             });
         }.bind(this));
     }
 
-    delUser(user) {
-        this.userManager.delUser(user.socketId);
+    /*
+    * 删除用户
+    * */
+    logout(user) {
+        // 本地删除
+        if( !Common.isNull(user) ) {
+            this.userManager.delUser(user.socketId);
 
-        redisClient.client.del(user.key(), (err, res) => {
-            appLog.log('im', 'info', '[' + user.userId  + ']OnlineUserManager.delUser, delete:' + res + ', err:' + err);
+            // redis删除
+            redisClient.client.del(user.uniquePattern(), (err, res) => {
+                appLog.log('im', 'warn', '[' + user.userId  + ']OnlineUserManager.logout, delete: ' + res + ', err: ' + err);
+            });
+        } else {
+            appLog.log('im', 'warn', '[null]OnlineUserManager.logout, No Such User');
+        }
+    }
+
+    /*
+    * 根据SocketId获取本地用户
+    * @param socketId 连接唯一Id
+    * */
+    getUser(socketId) {
+        return this.userManager.getUser(socketId);
+    }
+
+    /*
+    * 清空本地所有用户
+    * */
+    logoutAllLocalUsers() {
+        appLog.log('im', 'warn', '[null]OnlineUserManager.logoutAllLocalUsers');
+
+        this.userManager.getUsers((userId, user) => {
+            // redis删除
+            redisClient.client.del(user.uniquePattern(), null);
         });
     }
 
-    getUser(socketId) {
-        return this.userManager.getUser(socketId);
+    /*
+    * 增加本地用户
+    * */
+    loginLocal(user, resolve) {
+        // 增加到redis
+        redisClient.client.hmset(user.uniquePattern(),
+            DBModelKeys.RedisKey.UserKey.SocketIdKey, user.socketId,
+            DBModelKeys.RedisKey.UserKey.UserIdKey, user.userId,
+            DBModelKeys.RedisKey.UserKey.ConnectTimeKey, user.connectTime,
+            DBModelKeys.RedisKey.UserKey.LoginTimeKey, user.loginTime,
+            DBModelKeys.RedisKey.UserKey.ServerHostKey, user.serverHost,
+            DBModelKeys.RedisKey.UserKey.ServerPortKey, user.serverPort,
+            (err, res) => {
+                appLog.log('im', 'info', '[' + user.userId  + ']OnlineUserManager.loginLocal, ' + res + ', err:' + err);
+
+                // 增加本地用户
+                this.userManager.addUser(user);
+
+                // 登录处理完成
+                resolve();
+            });
     }
 }
 OnlineUserManager.instance = null;
