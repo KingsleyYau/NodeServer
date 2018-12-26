@@ -51,10 +51,7 @@ function connect() {
 	client.onmessage = function(ev) {
         console.log('Client onmessage(), ' + ev.data);
         let obj = JSON.parse(ev.data);
-
-        if( typeof(obj.req_data) != "undefined" ) {
-            $("[id=jsonRecv]").html(ev.data);
-        }
+        $("[id=jsonRecv]").html(ev.data);
 
         if( typeof(obj.errno) == "undefined" || obj.errno == 0 ) {
             if(obj.route == 'imLogin/login') {
@@ -197,10 +194,10 @@ connect();
     <div>
         msg recv : <lable id="msgRecv" />
     </div>
-    <div>
+    <div style="color:#00F000">
         json recv : <lable id="jsonRecv" />
     </div>
-    <div>
+    <div style="color:#F00000">
         json send : <lable id="jsonSend" />
     </div>
 </div>
