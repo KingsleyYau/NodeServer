@@ -21,6 +21,7 @@ function reset() {
     $("[id=roomId]").html("No Room");
     $("[id=msgRecv]").html('');
     $("[id=jsonRecv]").html('');
+    $("[id=jsonSend]").html('');
 }
 
 function connect() {
@@ -76,6 +77,7 @@ function send(obj) {
     console.log('Client send(), ' + data);
 
     if( client.readyState == client.OPEN ) {
+        $("[id=jsonSend]").html(data);
         client.send(data);
         reqId++;
         return true;
@@ -178,12 +180,12 @@ connect();
     <div id="login">
         status : <lable id="status">Not Connected</lable><br>
         userId : <lable id="userId"> </lable><br>
-        socketId : <lable id="socketId"> </lable>
+        socketId : <lable id="socketId"> </lable><br>
         <button onclick="login()">login</button>
         <button onclick="logout()">logout</button>
     </div>
     <div id="room">
-        roomId : <lable id="roomId">No Room</lable>
+        roomId : <lable id="roomId">No Room</lable><br>
         <button onclick="roomCreate()">roomCreate</button>
         <button onclick="roomIn()">roomIn</button>
         <button onclick=roomOut($("#roomId").html().trim())>roomOut</button>
@@ -197,6 +199,9 @@ connect();
     </div>
     <div>
         json recv : <lable id="jsonRecv" />
+    </div>
+    <div>
+        json send : <lable id="jsonSend" />
     </div>
 </div>
 </body>
