@@ -5,11 +5,11 @@
 
 // 公共库
 const Common = require('../../../lib/common');
-const Users = require('../../../lib/users');
+const Users = require('../../../user/users');
 
 // 直播间推送类
-const RoomInNotice = require('../notice/roomin-notice');
-const RoomOutNotice = require('../notice/roomout-notice');
+const RoomInNotice = require('../client/notice/roomin-notice');
+const RoomOutNotice = require('../client/notice/roomout-notice');
 
 class Room {
     constructor(roomId) {

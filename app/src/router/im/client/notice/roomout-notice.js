@@ -3,13 +3,10 @@
 * Author: Max.Chiu
 * */
 
-// 日志
-const appLog = require('../../../lib/app-log').AppLog.getInstance();
-// 公共库
-const Common = require('../../../lib/common');
-
+// 项目公共库
+const Common = require('../../../../lib/common');
 // 在线用户
-const OnlineUserManager = require('../../../lib/online-users').OnlineUserManager;
+const OnlineUserManager = require('../../../../user/online-users').OnlineUserManager;
 // 业务管理器
 const BaseNotice = require('./base-notice');
 

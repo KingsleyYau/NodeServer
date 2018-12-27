@@ -13,10 +13,10 @@ const Serve = require('koa-static');
 // 公共库
 const Fs = require('fs');
 const Path = require('path');
+
 // 项目公共库
-const appLog = require('./lib/app-log').AppLog.getInstance();
-const Session = require('./lib/session');
 const Common = require('./lib/common');
+const Session = require('./lib/session');
 const AppConfig = require('./config/app-config');
 // 项目接口
 const loginRouter = require('./router/http/login-router');
@@ -45,7 +45,7 @@ module.exports = class HttpService {
                 ctx.session.count++;
             }
 
-            appLog.log('http', 'info', '[' + ctx.socketId + ']-request, ' + ' (' + ctx.session.count + '), ' + ctx.request.url);
+            Common.log('http', 'info', '[' + ctx.socketId + ']-request, ' + ' (' + ctx.session.count + '), ' + ctx.request.url);
 
             // 等待其他中间件处理的异步返回
             await next();
@@ -63,6 +63,6 @@ module.exports = class HttpService {
         let port = AppConfig.http.port;;
         Http.createServer(this.app.callback()).listen(port);
 
-        appLog.log('http', 'fatal', 'Http service start in port : ' + port);
+        Common.log('http', 'fatal', 'Http service start in port : ' + port);
     }
 }

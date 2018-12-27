@@ -3,17 +3,14 @@
 * Author: Max.Chiu
 * */
 
-// 日志
-const appLog = require('../../../lib/app-log').AppLog.getInstance();
-const Common = require('../../../lib/common');
-
-// 用户
-const User = require('../../../lib/users').User;
-// 房间管理器
-const RoomMananger = require('../room/room').RoomManager;
+// 项目公共库
+const Common = require('../../../../lib/common');
+// 在线用户
+const OnlineUserManager = require('../../../../user/online-users').OnlineUserManager;
 // 业务管理器
 const BaseHandler = require('./base-handler');
-
+// 房间管理器
+const RoomMananger = require('../../room/room').RoomManager;
 // 推送消息
 const SendMsgNotice = require('../notice/sendmsg-notice');
 
@@ -28,7 +25,7 @@ module.exports = class SendMsgHandler extends BaseHandler {
 
     async handle(ctx, reqData) {
         return await new Promise(function (resolve, reject) {
-            appLog.log('im', 'info', '[' + ctx.socketId + ']-SendMsgHandler.handle');
+            Common.log('im', 'info', '[' + ctx.socketId + ']-SendMsgHandler.handle');
 
             let bFlag = false;
             let user = this.getBaseRespond(ctx, reqData);

@@ -3,12 +3,11 @@ const jsonParser = require('socket.io-json-parser');
 
 // 公共库
 const Log = require('./log');
-const Common = require('./common');
 const AppConfig = require('../config/app-config');
 
 class AppLog {
     static getInstance() {
-        if( Common.isNull(AppLog.instance) ) {
+        if( typeof(AppLog.instance)=="undefined" || AppLog.instance==null ) {
             AppLog.instance = new AppLog();
         }
         return AppLog.instance;

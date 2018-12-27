@@ -3,14 +3,12 @@
 * Author: Max.Chiu
 * */
 
-// 日志
-const appLog = require('../../../lib/app-log').AppLog.getInstance();
-// 公共库
-const Common = require('../../../lib/common');
+// 项目公共库
+const Common = require('../../../../lib/common');
 
 // 用户
-const User = require('../../../lib/users').User;
-const OnlineUserManager = require('../../../lib/online-users').OnlineUserManager;
+const User = require('../../../../user/users').User;
+const OnlineUserManager = require('../../../../user/online-users').OnlineUserManager;
 // 业务管理器
 const BaseHandler = require('./base-handler');
 
@@ -27,7 +25,7 @@ module.exports = class LoginHandler extends BaseHandler {
 
     async handle(ctx, reqData) {
         return await new Promise(async (resolve, reject) => {
-            appLog.log('im', 'info', '[' + ctx.socketId + ']-LoginHandler.handle');
+            Common.log('im', 'info', '[' + ctx.socketId + ']-LoginHandler.handle');
 
             let user = null;
 

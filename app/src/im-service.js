@@ -12,20 +12,14 @@ const SocketIO = require('socket.io');
 const jsonParser = require('socket.io-json-parser');
 
 // 项目公共库
-const Log = require('./lib/log');
-const appLog = require('./lib/app-log').AppLog.getInstance();
-const Session = require('./lib/session');
 const Common = require('./lib/common');
 const AppConfig = require('./config/app-config');
 // 项目接口
-const mainRouter = require('./router/im/handler/main-router');
+const mainRouter = require('./router/im/client/handler/main-router');
 const interMainRouter = require('./router/im/server/handler/server-main-router');
 
 module.exports = class ImService {
     constructor() {
-        // 创建日志
-        this.logger = Log.getLogger('im');
-
         // 创建内部服务
         this.createInternalServer();
 
@@ -48,7 +42,7 @@ module.exports = class ImService {
             let curTime = new Date();
             ctx.connectTtime = curTime.getTime();
 
-            appLog.log('im', 'info', '[' + ctx.socketId + ']-Im Client Connected');
+            Common.log('im', 'info', '[' + ctx.socketId + ']-Im Client Connected');
 
             // 等待其他中间件处理的异步返回
             await next();
@@ -72,7 +66,7 @@ module.exports = class ImService {
             // 记录连接时间
             let curTime = new Date();
             socket.connectTtime = curTime.getTime();
-            appLog.log('im-server', 'info', '[' + socket.id + ']-Im Server Connected');
+            Common.log('im-server', 'info', '[' + socket.id + ']-Im Server Connected');
 
             interMainRouter(socket);
         });
@@ -90,6 +84,6 @@ module.exports = class ImService {
         }
         this.inApp.listen(inPort);
 
-        appLog.log('im', 'fatal', 'Im service start in exPort : ' + exPort + ', inPort : ' + inPort);
+        Common.log('im', 'fatal', 'Im service start in exPort : ' + exPort + ', inPort : ' + inPort);
     }
 }

@@ -3,13 +3,8 @@
 * Author: Max.Chiu
 * */
 
-// 日志
-const appLog = require('../../../lib/app-log').AppLog.getInstance();
-// 公共库
-const Common = require('../../../lib/common');
-
-// 在线用户
-const OnlineUserManager = require('../../../lib/online-users').OnlineUserManager;
+// 项目公共库
+const Common = require('../../../../lib/common');
 
 module.exports = class BaseNotice {
     constructor() {
@@ -34,10 +29,10 @@ module.exports = class BaseNotice {
         let json = JSON.stringify(this.notice.noticeData);
 
         try {
-            appLog.log('im', 'info', '[' + user.socketId + ']-BaseNotice.send: ' + json);
+            Common.log('im', 'info', '[' + user.socketId + ']-BaseNotice.send: ' + json);
             user.websocket.send(json);
         } catch (err) {
-            appLog.log('im', 'debug', '[' + user.socketId + ']-BaseNotice.send, error: ' + err.message);
+            Common.log('im', 'debug', '[' + user.socketId + ']-BaseNotice.send, error: ' + err.message);
         }
     }
 }

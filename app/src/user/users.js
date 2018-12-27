@@ -3,14 +3,12 @@
 * Author: Max.Chiu
 * */
 
-// 公共库
-const Common = require('./common');
-// 日志
-const appLog = require('./app-log').AppLog.getInstance();
+// 项目公共库
+const Common = require('../lib/common');
 // App配置
 const AppConfig = require('../config/app-config');
 // Model的Keys
-const DBModelKeys = require('../model/model-keys');
+const DBModelKeys = require('../db/model-keys');
 
 class User {
     constructor(socketId, websocket, userId, connectTime, loginTime) {

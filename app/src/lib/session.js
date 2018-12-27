@@ -1,5 +1,5 @@
 const Session = require('koa-session-minimal')
-// const MysqlSession = require('koa-mysql-session')
+// const MysqlSession = require('koa-mysql-user')
 //
 // let store = new MysqlSession({
 //     user: 'root',
