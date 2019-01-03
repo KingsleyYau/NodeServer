@@ -11,28 +11,46 @@ const AppConfig = require('../config/app-config');
 const DBModelKeys = require('../db/model-keys');
 
 class User {
-    constructor(socketId, websocket, userId, connectTime, loginTime) {
+    constructor(userId, socketId, websocket, connectTime, loginTime) {
         this.noticeId = 0;
         this.userId = userId;
         this.socketId = socketId;
         this.websocket = websocket;
         this.connectTime = connectTime;
         this.loginTime = loginTime;
+        this.serverHost = '';
+        this.serverPort = 0;
+    }
 
-        this.serverHost = AppConfig.inApp.host;
-        let inPort = AppConfig.inApp.port;
-        if( !Common.isNull(process.env.INSTANCE_ID) ) {
-            inPort += parseInt(process.env.INSTANCE_ID);
-        }
-        this.serverPort = inPort;
+    static createUserWithLogin(userId, socketId, websocket, connectTime, loginTime) {
+        let user = new this(userId, socketId, websocket, connectTime, loginTime);
+
+        let appInfo = Common.appInfo();
+        user.serverHost = appInfo.serverHost;
+        user.serverPort = appInfo.serverPort;
+
+        return user;
+    }
+
+    static createUserWithRedis(userId, socketId, connectTime, loginTime, serverHost, serverPort) {
+        let user = new this(userId, socketId, null, connectTime, loginTime);
+
+        user.serverHost = serverHost;
+        user.serverPort = serverPort;
+
+        return user;
+    }
+
+    static createUserWithId(userId) {
+        return new this(userId, null, null, null, null, null);
+    }
+
+    static userIdPattern(userId) {
+        return DBModelKeys.RedisKey.OnlineKey + '-' + userId + '-*';
     }
 
     uniquePattern() {
         return DBModelKeys.RedisKey.OnlineKey + '-' + this.userId + '-' + this.socketId;
-    }
-
-    userIdPattern() {
-        return DBModelKeys.RedisKey.OnlineKey + '-' + this.userId + '*';
     }
 }
 

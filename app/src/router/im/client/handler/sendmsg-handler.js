@@ -9,9 +9,8 @@ const Common = require('../../../../lib/common');
 const OnlineUserManager = require('../../../../user/online-users').OnlineUserManager;
 // 业务管理器
 const BaseHandler = require('./base-handler');
-// 房间管理器
-const RoomMananger = require('../../room/room').RoomManager;
 // 推送消息
+const NoticeSender = require('../notice-sender/notice-sender');
 const SendMsgNotice = require('../notice/sendmsg-notice');
 
 module.exports = class SendMsgHandler extends BaseHandler {
@@ -24,31 +23,30 @@ module.exports = class SendMsgHandler extends BaseHandler {
     }
 
     async handle(ctx, reqData) {
-        return await new Promise(function (resolve, reject) {
+        return await new Promise( async (resolve, reject) => {
             Common.log('im', 'info', '[' + ctx.socketId + ']-SendMsgHandler.handle');
 
             let bFlag = false;
             let user = this.getBaseRespond(ctx, reqData);
-            let roomManager = RoomMananger.getInstance();
-            let room = roomManager.getRoom(reqData.req_data.roomId);
-            if( !Common.isNull(user)  ) {
-                if( !Common.isNull(room) ) {
-                    bFlag = true;
-                } else {
-                    this.respond.resData.errno = 16104;
-                    this.respond.resData.errmsg = 'live room is not exist.'
+
+            if( !Common.isNull(user) ) {
+                // 查找目标用户
+                if( !Common.isNull(reqData.req_data.toUserId) ) {
+                    OnlineUserManager.getInstance().getUserWithId(reqData.req_data.toUserId).then( async (userList) => {
+                        for (let i = 0; i < userList.length; i++) {
+                            let desUser = userList[i];
+
+                            // 发送消息到用户
+                            let sender = new NoticeSender();
+                            let notice = new SendMsgNotice(user.userId, desUser.userId, reqData.req_data.msg);
+                            sender.send(desUser.userId, notice);
+                        }
+                    });
                 }
             }
 
-            if( bFlag ) {
-                // 发送消息到直播间
-                let notice = new SendMsgNotice(user, reqData.req_data.msg);
-                room.broadcast(notice);
-            }
-
             resolve(this.respond);
-
-        }.bind(this));
+        });
     }
 }
 

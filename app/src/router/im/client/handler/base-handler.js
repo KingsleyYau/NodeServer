@@ -16,7 +16,7 @@ module.exports = class BaseHandler {
                 id:0,
                 errno:0,
                 errmsg:'',
-                data:null
+                data:{}
             }
 
         }
@@ -30,7 +30,7 @@ module.exports = class BaseHandler {
         this.respond.resData.id = reqData.id;
         this.respond.resData.route = this.constructor.getRoute();
 
-        let user = OnlineUserManager.getInstance().getUser(ctx.socketId);
+        let user = OnlineUserManager.getInstance().getUserWithSocket(ctx.socketId);
         if( Common.isNull(user) ) {
             // 还没登录
             this.respond.resData.errno = 10002;

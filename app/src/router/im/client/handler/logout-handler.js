@@ -20,7 +20,7 @@ module.exports = class LogoutHandler extends BaseHandler {
     }
 
     async handle(ctx, reqData) {
-        return await new Promise(function (resolve, reject) {
+        return new Promise(function (resolve, reject) {
             Common.log('im', 'info', '[' + ctx.socketId + ']-LogoutHandler.handle');
 
             let user = this.getBaseRespond(ctx, reqData);

@@ -8,7 +8,7 @@
 REDIS_DIR=/Users/max/Documents/Project/redis
 REDIS=$REDIS_DIR/bin/redis-server
 cd $REDIS_DIR
-$REDIS ./conf/redis.conf
+#$REDIS ./conf/redis.conf
 cd -
 
 # Start app

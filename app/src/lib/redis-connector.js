@@ -11,16 +11,16 @@ const Common = require('./common');
 // 数据库配置
 const DBConfig = require('../config/db-config');
 
-class RedisClient {
+class RedisConnector {
     static getInstance() {
-        if( Common.isNull(RedisClient.instance) ) {
-            RedisClient.instance = new RedisClient();
+        if( Common.isNull(RedisConnector.instance) ) {
+            RedisConnector.instance = new RedisConnector();
         }
-        return RedisClient.instance;
+        return RedisConnector.instance;
     }
 
     constructor() {
-        Common.log('common', 'warn', 'Redis.start, ' + DBConfig.redis.host + ':' + DBConfig.redis.port);
+        Common.log('common', 'FATAL', 'Redis.start, ' + DBConfig.redis.host + ':' + DBConfig.redis.port);
 
         this.client = Redis.createClient(DBConfig.redis.port, DBConfig.redis.host);
 
@@ -44,14 +44,14 @@ class RedisClient {
             Common.log('common', 'warn', 'Redis.end, ' + DBConfig.redis.host + ':' + DBConfig.redis.port);
         });
 
-        this.client.on("warning", () => {
-            Common.log('common', 'warn', 'Redis.warning, ' + DBConfig.redis.host + ':' + DBConfig.redis.port);
+        this.client.on("warning", (msg) => {
+            Common.log('common', 'warn', 'Redis.warning, ' + DBConfig.redis.host + ':' + DBConfig.redis.port + ', msg: ' + msg);
         });
     }
 }
 
-RedisClient.instance = null;
+RedisConnector.instance = null;
 
 module.exports = {
-    RedisClient
+    RedisConnector
 }

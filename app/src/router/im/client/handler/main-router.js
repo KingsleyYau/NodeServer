@@ -23,7 +23,14 @@ const SendMsgHandler = require('./sendmsg-handler');
 
 // 设置路由
 let mainRouter = new Router();
-// 定义为异步中间件
+
+function disconnect(ctx) {
+    let user = OnlineUserManager.getInstance().getUserWithSocket(ctx.socketId);
+    let roomManager = RoomMananger.getInstance();
+    roomManager.delUser(user);
+    OnlineUserManager.getInstance().logout(user);
+}
+
 mainRouter.all('/', async (ctx, next) => {
     // 等待异步接口
     await new Promise(function (resolve, reject) {
@@ -74,35 +81,24 @@ mainRouter.all('/', async (ctx, next) => {
         })
 
         ctx.websocket.on('close', function (err) {
-            Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.close, ' + err);
+            Common.log('im', 'debug', '[' + ctx.socketId + ']-MainRouter.close, ' + err);
 
-            let user = OnlineUserManager.getInstance().getUser(ctx.socketId);
-            let roomManager = RoomMananger.getInstance();
-            roomManager.delUser(user);
-            OnlineUserManager.getInstance().logout(user);
-
+            disconnect(ctx);
             reject(err);
         });
 
         ctx.websocket.on('error', function (err) {
-            Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.error, ' + err);
+            Common.log('im', 'error', '[' + ctx.socketId + ']-MainRouter.error, ' + err);
 
-            let user = OnlineUserManager.getInstance().getUser(ctx.socketId);
-            let roomManager = RoomMananger.getInstance();
-            roomManager.delUser(user);
-            OnlineUserManager.getInstance().logout(user);
-
+            disconnect(ctx);
             reject(err);
         });
 
     }.bind(this)).then().catch(
         (err) => {
-            Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.catch, ' + err);
+            Common.log('im', 'error', '[' + ctx.socketId + ']-MainRouter.catch, ' + err);
 
-            let user = OnlineUserManager.getInstance().getUser(ctx.socketId);
-            let roomManager = RoomMananger.getInstance();
-            roomManager.delUser(user);
-            OnlineUserManager.getInstance().logout(user);
+            disconnect(ctx);
         }
     );
 });

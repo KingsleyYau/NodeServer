@@ -9,16 +9,17 @@ const Common = require('../../../../lib/common');
 const BaseNotice = require('./base-notice');
 
 module.exports = class KickNotice extends BaseNotice {
-    constructor() {
+    constructor(userId) {
         super();
+        this.obj.noticeData.req_data.userId = userId;
+        this.obj.isKick = true;
     }
 
     static getRoute() {
         return 'imShare/kickNotice';
     }
 
-    send(user) {
-        super.send(user);
-        user.websocket.close();
+    async send(user) {
+        return super.send(user);
     }
 }

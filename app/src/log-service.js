@@ -33,10 +33,10 @@ class LogService {
 
         // socket连接
         this.io.on('connection', (socket) => {
-            this.logger.log('warn', '[' + process.pid + '][log] - Log Client Connected, ' + socket.id);
+            this.logger.log('warn', '[' + process.pid + '][log] - Log Client Connected, [' + socket.id + ']');
 
             socket.on('disconnect', () => {
-                this.logger.log('warn', '[' + process.pid + '][log] - Log Client Disconnected, ' + socket.id);
+                this.logger.log('warn', '[' + process.pid + '][log] - Log Client Disconnected, [' + socket.id + ']');
             });
 
             socket.on('log', (obj) => {

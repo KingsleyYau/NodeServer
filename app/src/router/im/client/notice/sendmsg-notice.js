@@ -11,11 +11,11 @@ const OnlineUserManager = require('../../../../user/online-users').OnlineUserMan
 const BaseNotice = require('./base-notice');
 
 module.exports = class SendMsgNotice extends BaseNotice {
-    constructor(fromUser, msg) {
+    constructor(fromUserId, toUserId, msg) {
         super();
 
-        this.notice.noticeData.req_data.userId = fromUser.userId;
-        this.notice.noticeData.req_data.msg = '[' + fromUser.userId + '-(' + fromUser.socketId + ')]: ' + msg;
+        this.obj.noticeData.req_data.userId = fromUserId;
+        this.obj.noticeData.req_data.msg = '[' + fromUserId + ']: ' + msg;
     }
 
     static getRoute() {

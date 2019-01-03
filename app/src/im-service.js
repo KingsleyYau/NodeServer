@@ -42,7 +42,7 @@ module.exports = class ImService {
             let curTime = new Date();
             ctx.connectTtime = curTime.getTime();
 
-            Common.log('im', 'info', '[' + ctx.socketId + ']-Im Client Connected');
+            Common.log('im', 'debug', '[' + ctx.socketId + ']-Im Client Connected');
 
             // 等待其他中间件处理的异步返回
             await next();
@@ -66,7 +66,7 @@ module.exports = class ImService {
             // 记录连接时间
             let curTime = new Date();
             socket.connectTtime = curTime.getTime();
-            Common.log('im-server', 'info', '[' + socket.id + ']-Im Server Connected');
+            Common.log('im-server', 'debug', '[' + socket.id + ']-Im Server Connected');
 
             interMainRouter(socket);
         });

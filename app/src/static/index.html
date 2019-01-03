@@ -88,7 +88,7 @@ function login() {
     obj = {
         route:'imLogin/login',
         req_data:{
-            userId:'max',
+            userId:$("#userId").val(),
             sessionId:'session123456',
             pagename:7
         }
@@ -146,6 +146,7 @@ function sendMsg(roomId, msg) {
         req_data:{
             token:'token123456',
             roomId:roomId,
+            toUserId:$("#toUserId").val(),
             msg:msg
         }
     }
@@ -176,7 +177,7 @@ connect();
 <div id="">
     <div id="login">
         status : <lable id="status">Not Connected</lable><br>
-        userId : <lable id="userId"> </lable><br>
+        userId : <input id="userId" type="text" name="" value="max" /><br>
         socketId : <lable id="socketId"> </lable><br>
         <button onclick="login()">login</button>
         <button onclick="logout()">logout</button>
@@ -188,7 +189,8 @@ connect();
         <button onclick=roomOut($("#roomId").html().trim())>roomOut</button>
     </div>
     <div>
-        msg : <input id="msg" type="text" name="msg" />
+        toUserId : <input id="toUserId" type="text" name="" value="max" /><br>
+        msg : <input id="msg" type="text" name="msg" value="hello" /><br>
         <button onclick=sendMsg($("[id=roomId]").html().trim(),$("#msg").val())>sendMsg</button>
     </div>
     <div>

@@ -17,21 +17,44 @@ const OnlineUserManager = require('../../../../user/online-users').OnlineUserMan
 const RoomMananger = require('../../room/room').RoomManager;
 
 // 逻辑处理
-const BaseHandler = require('./server-base-handler');
-const KickHandler = require('./server-kick-handler');
-
-// 消息推送类
-const KickNotice = require('../../client/notice/kick-notice');
+const noticeRouter = require('../../client/notice/notice-router').NoticeRouter.getInstance();
 
 // 设置路由
 module.exports = function mainRouter(socket) {
     socket.on('disconnect', () => {
-        Common.log('im-server', 'info', '[' + socket.id + ']-MainRouter, Internal Client Disonnected, ' + socket.id);
+        Common.log('im-server', 'info', '[' + socket.id + ']-MainRouter.disconnect, ' + socket.id);
     });
 
-    socket.on(KickHandler.getRoute(), (reqData) => {
-        let handler = new KickHandler();
-        handler.handle(socket, reqData);
-    });
+    for (let i = 0; i < noticeRouter.routeArray.length; i++) {
+        let route = noticeRouter.routeArray[i].getRoute();
+        socket.on(route, (reqData) => {
+            let json = JSON.stringify(reqData);
+            Common.log('im-server', 'info', '[' + socket.id + ']-MainRouter.on, ' + route + ', ' + json);
 
+            // 转发通知
+            if( !Common.isNull(reqData.socketId) ) {
+                let user = OnlineUserManager.getInstance().getUserWithSocket(reqData.socketId);
+                if( !Common.isNull(user) ) {
+                    // 增加本地推送Id
+                    reqData.id = user.noticeId++;
+
+                    let disconnect = false;
+                    if( !Common.isNull(reqData.isKick) ) {
+                        disconnect = reqData.isKick;
+
+                        // 删除多余字段
+                        delete reqData['isKick'];
+                    }
+
+                    json = JSON.stringify(reqData);
+                    Common.log('im-server', 'info', '[' + user.userId + ']-MainRouter.on, ' + route + ', notice: ' + json);
+                    user.websocket.send(json);
+
+                    if( disconnect ) {
+                        user.websocket.close();
+                    }
+                }
+            }
+        });
+    }
 };
