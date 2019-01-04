@@ -5,7 +5,7 @@
 
 const DBModelKeys = {
     RedisKey:{
-        OnlineKey:'OnlineKey',
+        OnlineUserKey:'OnlineUserKey',
         UserKey:{
             SocketIdKey:'SocketIdKey',
             UserIdKey:'UserIdKey',
