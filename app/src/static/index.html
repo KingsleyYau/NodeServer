@@ -57,6 +57,14 @@ function connect() {
             if(obj.route == 'imLogin/login') {
                 $("[id=userId]").html(obj.data.userId);
                 $("[id=socketId]").html(obj.data.socketId);
+                roomList();
+            } else if(obj.route == 'imMan/roomList') {
+                let roomListStr = '';
+                for(let i = 0; i < obj.data.roomList.length; i++) {
+                    roomListStr += obj.data.roomList[i];
+                    roomListStr += ' ';
+                }
+                $("[id=roomList]").html(roomListStr);
             } else if(obj.route == 'imMan/roomCreate') {
                 $("[id=roomId]").val(obj.data.roomId);
             } else if(obj.route == 'imMan/roomIn') {
@@ -109,6 +117,16 @@ function logout() {
     send(obj);
 }
 
+function roomList() {
+    obj = {
+        route:'imMan/roomList',
+        req_data:{
+            token:'token123456',
+        }
+    }
+    send(obj);
+}
+
 function roomCreate() {
     obj = {
         route:'imMan/roomCreate',
@@ -118,7 +136,6 @@ function roomCreate() {
     }
     send(obj);
 }
-
 
 function roomIn() {
     obj = {
@@ -196,6 +213,7 @@ connect();
         <button onclick="logout()">logout</button>
     </div>
     <div id="room">
+        roomIdList : <lable id="roomList"></lable><br>
         roomId : <input id="roomId" type="text" name="" value="No Room" /><br>
         roomMsg : <input id="roomMsg" type="text" name="" value="Room Message" /><br>
         <button onclick=roomCreate()>roomCreate</button>

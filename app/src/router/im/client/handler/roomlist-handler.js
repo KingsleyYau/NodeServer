@@ -1,5 +1,5 @@
 /*
-* 进入直播间逻辑处理类
+* 直播间列表逻辑处理类
 * Author: Max.Chiu
 * */
 
@@ -12,13 +12,13 @@ const BaseHandler = require('./base-handler');
 // 房间管理器
 const RoomMananger = require('../../room/room').RoomManager;
 
-module.exports = class RoomCreateHandler extends BaseHandler {
+module.exports = class RoomListHandler extends BaseHandler {
     constructor() {
         super();
     }
 
     static getRoute() {
-        return 'imMan/roomCreate';
+        return 'imMan/roomList';
     }
 
     async handle(ctx, reqData) {
@@ -27,13 +27,14 @@ module.exports = class RoomCreateHandler extends BaseHandler {
 
             let user = this.getBaseRespond(ctx, reqData);
             let roomManager = RoomMananger.getInstance();
-            await roomManager.addRoom(user).then(result => {
+            await roomManager.getRoomList(user).then(result => {
                 if( Common.isNull(result.err) ) {
-                    this.respond.resData.data = result.room.getData();
+                    this.respond.resData.data = {roomList:result.roomList};
                 } else {
                     this.respond.resData.errno = 16104;
                     this.respond.resData.errmsg = result.err;
                 }
+
             });
 
             resolve(this.respond);

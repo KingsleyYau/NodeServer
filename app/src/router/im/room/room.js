@@ -23,7 +23,7 @@ class Room {
         this.roomId = roomId;
     }
 
-    static roomIdPattern() {
+    static roomListPattern() {
         return DBModelKeys.RedisKey.RoomKey.RoomIdKey + '-*';
     }
 
@@ -115,6 +115,32 @@ class RoomManager {
             redisClient.client.hgetall(room.uniquePattern(), async (err, res) => {
                 Common.log('im', 'info', '[' + user.userId  + ']-RoomManager.getRoom, ' + roomId + ', err: ' + err + ', res: ' + res);
                 resolve({room:room, err:err});
+            });
+        });
+    }
+
+    /*
+    * 获取直播间列表
+    * */
+    async getRoomList(user) {
+        return new Promise( async (resolve, reject) => {
+            redisClient.client.keys(Room.roomListPattern(), async (err, res) => {
+                Common.log('im', 'info', '[' + user.userId  + ']-RoomManager.getRoomList, err: ' + err + ', res: ' + res);
+
+                let roomList = [];
+                for (let i = 0; i < res.length; i++) {
+                    let roomIdKey = res[i];
+                    await new Promise(async (resolve, reject) => {
+                        redisClient.client.hget(roomIdKey, DBModelKeys.RedisKey.RoomKey.RoomIdKey, async (err, res) => {
+                            if( !err && !Common.isNull(res) ) {
+                                let room = new Room(res);
+                                roomList.push(res);
+                                resolve(room);
+                            }
+                        });
+                    });
+                }
+                resolve({roomList:roomList, err:err});
             });
         });
     }

@@ -16,6 +16,7 @@ const RoomMananger = require('../../room/room').RoomManager;
 const BaseHandler = require('./base-handler');
 const LoginHandler = require('./login-handler');
 const LogoutHandler = require('./logout-handler');
+const RoomListHandler = require('./roomlist-handler');
 const RoomCreateHandler = require('./roomcreate-handler');
 const RoomInHandler = require('./roomin-handler');
 const RoomOutHandler = require('./roomout-handler');
@@ -53,7 +54,9 @@ mainRouter.all('/', async (ctx, next) => {
                 handler = new LoginHandler();
             } else if( reqData.route == LogoutHandler.getRoute() ) {
                 handler = new LogoutHandler();
-            } else if( reqData.route == RoomCreateHandler.getRoute() ) {
+            } else if( reqData.route == RoomListHandler.getRoute() ) {
+                handler = new RoomListHandler();
+            }  else if( reqData.route == RoomCreateHandler.getRoute() ) {
                 handler = new RoomCreateHandler();
             } else if( reqData.route == RoomInHandler.getRoute() ) {
                 handler = new RoomInHandler();
