@@ -24,31 +24,26 @@ module.exports = class BroadcastMsgHandler extends BaseHandler {
     }
 
     async handle(ctx, reqData) {
-        return await new Promise(function (resolve, reject) {
+        return await new Promise( async (resolve, reject) => {
             Common.log('im', 'info', '[' + ctx.socketId + ']-BroadcastMsgHandler.handle');
 
-            let bFlag = false;
             let user = this.getBaseRespond(ctx, reqData);
             let roomManager = RoomMananger.getInstance();
-            let room = roomManager.getRoom(reqData.req_data.roomId);
-            if( !Common.isNull(user)  ) {
-                if( !Common.isNull(room) ) {
-                    bFlag = true;
+            await roomManager.broadcast(user, reqData.req_data.roomId, reqData.req_data.msg).then(result => {
+                if( Common.isNull(result.err) ) {
+                    // 记录连接直播间Id到
+                    ctx.room = result.room;
+
+                    this.respond.resData.data = result.room.getData();
                 } else {
                     this.respond.resData.errno = 16104;
-                    this.respond.resData.errmsg = 'live room is not exist.'
+                    this.respond.resData.errmsg = result.err;
                 }
-            }
-
-            if( bFlag ) {
-                // 发送消息到直播间
-                let notice = new SendMsgNotice(user, reqData.req_data.msg);
-                room.broadcast(notice);
-            }
+            });
 
             resolve(this.respond);
 
-        }.bind(this));
+        });
     }
 }
 

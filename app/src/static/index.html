@@ -136,19 +136,30 @@ function roomOut(roomId) {
         route:'imMan/roomOut',
         req_data:{
             token:'token123456',
-            roomId:$("#roomId").val(),
+            roomId:roomId,
         }
     }
     send(obj);
 }
 
-function sendMsg(roomId, msg) {
+function broadcast(roomId, msg) {
     obj = {
         route:'imShare/sendLiveChat',
         req_data:{
             token:'token123456',
             roomId:roomId,
-            toUserId:$("#toUserId").val(),
+            msg:msg
+        }
+    }
+    send(obj);
+}
+
+function sendMsg(userId, msg) {
+    obj = {
+        route:'imShare/sendMsg',
+        req_data:{
+            token:'token123456',
+            toUserId:userId,
             msg:msg
         }
     }
@@ -186,14 +197,16 @@ connect();
     </div>
     <div id="room">
         roomId : <input id="roomId" type="text" name="" value="No Room" /><br>
-        <button onclick="roomCreate()">roomCreate</button>
-        <button onclick="roomIn()">roomIn</button>
-        <button onclick=roomOut($("#roomId").html().trim())>roomOut</button>
+        roomMsg : <input id="roomMsg" type="text" name="" value="Room Message" /><br>
+        <button onclick=roomCreate()>roomCreate</button>
+        <button onclick=roomIn()>roomIn</button>
+        <button onclick=roomOut($("#roomId").val())>roomOut</button>
+        <button onclick=broadcast($("#roomId").val(),$("#roomMsg").val())>broadcast</button>
     </div>
     <div>
         toUserId : <input id="toUserId" type="text" name="" value="max" /><br>
-        msg : <input id="msg" type="text" name="" value="hello" /><br>
-        <button onclick=sendMsg($("[id=roomId]").html().trim(),$("#msg").val())>sendMsg</button>
+        msg : <input id="msg" type="text" name="" value="User Message" /><br>
+        <button onclick=sendMsg($("#toUserId").val(),$("#msg").val())>sendMsg</button>
     </div>
     <div>
         msg recv : <lable id="msgRecv" />

@@ -19,6 +19,7 @@ const LogoutHandler = require('./logout-handler');
 const RoomCreateHandler = require('./roomcreate-handler');
 const RoomInHandler = require('./roomin-handler');
 const RoomOutHandler = require('./roomout-handler');
+const BroadcastMsgHandler = require('./broadcastmsg-handler');
 const SendMsgHandler = require('./sendmsg-handler');
 
 // 设置路由
@@ -58,6 +59,8 @@ mainRouter.all('/', async (ctx, next) => {
                 handler = new RoomInHandler();
             } else if( reqData.route == RoomOutHandler.getRoute() ) {
                 handler = new RoomOutHandler();
+            } else if( reqData.route == BroadcastMsgHandler.getRoute() ) {
+                handler = new BroadcastMsgHandler();
             } else if( reqData.route == SendMsgHandler.getRoute() ) {
                 handler = new SendMsgHandler();
             } else {

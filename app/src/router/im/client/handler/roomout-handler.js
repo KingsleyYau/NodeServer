@@ -31,7 +31,7 @@ module.exports = class RoomOutHandler extends BaseHandler {
                 if( Common.isNull(result.err) ) {
                     // 删除连接直播间Id
                     delete ctx['room'];
-                    
+
                     this.respond.resData.data = result.room.getData();
                 } else {
                     this.respond.resData.errno = 16104;

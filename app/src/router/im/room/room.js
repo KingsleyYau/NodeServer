@@ -16,41 +16,11 @@ const DBModelKeys = require('../../../db/model-keys');
 const NoticeSender = require('../client/notice-sender/notice-sender');
 const RoomInNotice = require('../client/notice/roomin-notice');
 const RoomOutNotice = require('../client/notice/roomout-notice');
+const SendMsgNotice = require('../client/notice/sendmsg-notice');
 
 class Room {
     constructor(roomId) {
         this.roomId = roomId;
-    }
-
-    /*
-    * 用户进入直播间
-    * */
-    addUser(userId) {
-        // 增加直播间用户
-
-        // 通知其他用户，有人进入
-        let notice = new RoomInNotice(user);
-        this.broadcast(notice);
-    }
-
-    /*
-    * 用户退出直播间
-    * */
-    delUser(userId) {
-        // 删除直播间用户
-
-        // 通知其他用户，有人退出
-        let notice = new RoomOutNotice(user);
-        this.broadcast(notice);
-    }
-
-    /*
-    * 直播间广播
-    * */
-    broadcast(notice) {
-        // this.userManager.getUsers( (socketId, toUser) => {
-        //     notice.send(toUser);
-        // });
     }
 
     static roomIdPattern() {
@@ -142,9 +112,32 @@ class RoomManager {
     async getRoom(user, roomId) {
         return new Promise( async (resolve, reject) => {
             let room = new Room(roomId);
-            redisClient.client.hget(room.uniquePattern(), async (err, res) => {
+            redisClient.client.hgetall(room.uniquePattern(), async (err, res) => {
                 Common.log('im', 'info', '[' + user.userId  + ']-RoomManager.getRoom, ' + roomId + ', err: ' + err + ', res: ' + res);
                 resolve({room:room, err:err});
+            });
+        });
+    }
+
+    /*
+    * 直播间广播
+    * */
+    async broadcast(user, roomId, msg) {
+        return new Promise( async (resolve, reject) => {
+            let room = new Room(roomId);
+
+            redisClient.client.smembers(room.memberPattern(), async (err, res) => {
+                Common.log('im', 'info', '[' + user.userId + ']-RoomManager.broadcast, ' + roomId + ', msg: ' + msg + ', err: ' + err + ', res: ' + res);
+
+                if (!err) {
+                    // 通知其他用户, 有用户进入直播间
+                    for (let i = 0; i < res.length; i++) {
+                        let toUserId = res[i];
+                        let sender = new NoticeSender();
+                        let notice = new SendMsgNotice(user.userId, toUserId.userId, msg);
+                        sender.send(toUserId, notice);
+                    }
+                }
             });
         });
     }

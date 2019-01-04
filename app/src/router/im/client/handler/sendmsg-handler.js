@@ -19,7 +19,7 @@ module.exports = class SendMsgHandler extends BaseHandler {
     }
 
     static getRoute() {
-        return 'imShare/sendLiveChat';
+        return 'imShare/sendMsg';
     }
 
     async handle(ctx, reqData) {
