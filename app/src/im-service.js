@@ -15,7 +15,7 @@ const jsonParser = require('socket.io-json-parser');
 const Common = require('./lib/common');
 const AppConfig = require('./config/app-config');
 // 项目接口
-const mainRouter = require('./router/im/client/handler/main-router');
+const mainRouter = require('./router/im/client/handler/client-main-router');
 const interMainRouter = require('./router/im/server/handler/server-main-router');
 
 module.exports = class ImService {

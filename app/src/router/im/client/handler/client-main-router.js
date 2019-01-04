@@ -12,19 +12,11 @@ const User = require('../../../../user/users').User;
 const OnlineUserManager = require('../../../../user/online-users').OnlineUserManager;
 // 房间管理器
 const RoomMananger = require('../../room/room').RoomManager;
-
-const BaseHandler = require('./base-handler');
-const LoginHandler = require('./login-handler');
-const LogoutHandler = require('./logout-handler');
-const RoomListHandler = require('./roomlist-handler');
-const RoomCreateHandler = require('./roomcreate-handler');
-const RoomInHandler = require('./roomin-handler');
-const RoomOutHandler = require('./roomout-handler');
-const BroadcastMsgHandler = require('./broadcastmsg-handler');
-const SendMsgHandler = require('./sendmsg-handler');
+// 业务逻辑处理
+const HandleRouter = require('./client-bridge-router').HandleRouter;
 
 // 设置路由
-let mainRouter = new Router();
+let clientMainRouter = new Router();
 
 function disconnect(ctx) {
     let user = OnlineUserManager.getInstance().getUserWithSocket(ctx.socketId);
@@ -37,7 +29,7 @@ function disconnect(ctx) {
     }
 }
 
-mainRouter.all('/', async (ctx, next) => {
+clientMainRouter.all('/', async (ctx, next) => {
     // 等待异步接口
     await new Promise(function (resolve, reject) {
         ctx.websocket.on('message', async (message) => {
@@ -45,27 +37,15 @@ mainRouter.all('/', async (ctx, next) => {
 
             let data = '';
             let handlerRespond = {};
-            let handler;
+            let handler = null;
 
             let bHandle = true;
             // 路由分发
             let reqData = JSON.parse(message);
-            if( reqData.route == LoginHandler.getRoute() ) {
-                handler = new LoginHandler();
-            } else if( reqData.route == LogoutHandler.getRoute() ) {
-                handler = new LogoutHandler();
-            } else if( reqData.route == RoomListHandler.getRoute() ) {
-                handler = new RoomListHandler();
-            }  else if( reqData.route == RoomCreateHandler.getRoute() ) {
-                handler = new RoomCreateHandler();
-            } else if( reqData.route == RoomInHandler.getRoute() ) {
-                handler = new RoomInHandler();
-            } else if( reqData.route == RoomOutHandler.getRoute() ) {
-                handler = new RoomOutHandler();
-            } else if( reqData.route == BroadcastMsgHandler.getRoute() ) {
-                handler = new BroadcastMsgHandler();
-            } else if( reqData.route == SendMsgHandler.getRoute() ) {
-                handler = new SendMsgHandler();
+
+            let handlerCls = HandleRouter.getInstance().getRouterByName(reqData.route);
+            if( handlerCls ) {
+                handler = new handlerCls();
             } else {
                 bHandle = false;
             }
@@ -121,4 +101,4 @@ mainRouter.all('/', async (ctx, next) => {
     );
 });
 
-module.exports = mainRouter;
+module.exports = clientMainRouter;
