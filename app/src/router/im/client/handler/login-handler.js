@@ -27,11 +27,10 @@ module.exports = class LoginHandler extends BaseHandler {
     }
 
     async handle(ctx, reqData) {
-        return await new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             Common.log('im', 'debug', '[' + ctx.socketId + ']-LoginHandler.handle');
 
             let user = null;
-
             if( !Common.isNull(reqData.req_data.userId) ) {
                 // 如果已经登录, 直接返回
                 let oldUser = OnlineUserManager.getInstance().getUserWithSocket(ctx.socketId);

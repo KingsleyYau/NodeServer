@@ -17,7 +17,7 @@ const OnlineUserManager = require('../../../../user/online-users').OnlineUserMan
 const RoomMananger = require('../../room/room').RoomManager;
 
 // 逻辑处理
-const noticeRouter = require('../../client/notice/notice-router').NoticeRouter.getInstance();
+const bridgeRouter = require('./server-bridge-router').BridgeRouter.getInstance();
 
 // 设置路由
 module.exports = function mainRouter(socket) {
@@ -25,11 +25,10 @@ module.exports = function mainRouter(socket) {
         Common.log('im-server', 'info', '[' + socket.id + ']-MainRouter.disconnect, ' + socket.id);
     });
 
-    for (let i = 0; i < noticeRouter.routeArray.length; i++) {
-        let route = noticeRouter.routeArray[i].getRoute();
+    for (let i = 0; i < bridgeRouter.routeArray.length; i++) {
+        let route = bridgeRouter.routeArray[i].getRoute();
         socket.on(route, (reqData) => {
             let json = JSON.stringify(reqData);
-            Common.log('im-server', 'info', '[' + socket.id + ']-MainRouter.on, ' + route + ', ' + json);
 
             // 转发通知
             if( !Common.isNull(reqData.socketId) ) {
@@ -47,7 +46,7 @@ module.exports = function mainRouter(socket) {
                     }
 
                     json = JSON.stringify(reqData);
-                    Common.log('im-server', 'info', '[' + user.userId + ']-MainRouter.on, ' + route + ', notice: ' + json);
+                    Common.log('im-server', 'info', '[' + user.socketId + ']-MainRouter.on, ' + route + ', notice: ' + json);
                     user.websocket.send(json);
 
                     if( disconnect ) {

@@ -22,23 +22,25 @@ module.exports = class RoomOutHandler extends BaseHandler {
     }
 
     async handle(ctx, reqData) {
-        return await new Promise(function (resolve, reject) {
+        return await new Promise( async (resolve, reject) => {
             Common.log('im', 'info', '[' + ctx.socketId + ']-RoomOutHandler.handle');
 
             let user = this.getBaseRespond(ctx, reqData);
-            if( !Common.isNull(user)  ) {
-                let roomManager = RoomMananger.getInstance();
-                let room = roomManager.getRoom(reqData.req_data.roomId);
-                if( !Common.isNull(room) ) {
-                    room.delUser(user);
+            let roomManager = RoomMananger.getInstance();
+            await roomManager.delRoomUser(user, reqData.req_data.roomId).then(result => {
+                if( Common.isNull(result.err) ) {
+                    // 删除连接直播间Id
+                    delete ctx['room'];
+                    
+                    this.respond.resData.data = result.room.getData();
                 } else {
                     this.respond.resData.errno = 16104;
-                    this.respond.resData.errmsg = 'live room is not exist.'
+                    this.respond.resData.errmsg = result.err;
                 }
-            }
+            });
 
             resolve(this.respond);
-        }.bind(this));
+        });
     }
 }
 

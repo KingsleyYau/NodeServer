@@ -5,15 +5,13 @@
 
 // 项目公共库
 const Common = require('../../../../lib/common');
-// 在线用户
-const OnlineUserManager = require('../../../../user/online-users').OnlineUserManager;
 // 业务管理器
 const BaseNotice = require('./base-notice');
 
 module.exports = class RoomInNotice extends BaseNotice {
-    constructor(fromUser) {
+    constructor(userId) {
         super();
-        this.notice.noticeData.req_data.userId = fromUser.userId;
+        this.obj.noticeData.req_data.userId = userId;
     }
 
     static getRoute() {

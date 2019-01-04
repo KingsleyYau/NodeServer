@@ -11,9 +11,9 @@ const OnlineUserManager = require('../../../../user/online-users').OnlineUserMan
 const BaseNotice = require('./base-notice');
 
 module.exports = class RoomOutNotice extends BaseNotice {
-    constructor(fromUser) {
+    constructor(userId) {
         super();
-        this.notice.noticeData.req_data.userid = fromUser.userId;
+        this.obj.noticeData.req_data.userId = userId;
     }
 
     static getRoute() {

@@ -55,13 +55,6 @@ class User {
 }
 
 class UserManager {
-    static getInstance() {
-        if( Common.isNull(UserManager.instance) ) {
-            UserManager.instance = new UserManager();
-        }
-        return UserManager.instance;
-    }
-
     constructor() {
         this.userList = {};
     }
@@ -84,7 +77,6 @@ class UserManager {
         });
     }
 }
-UserManager.instance = null;
 
 module.exports = {
     User,

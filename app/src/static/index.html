@@ -57,8 +57,10 @@ function connect() {
             if(obj.route == 'imLogin/login') {
                 $("[id=userId]").html(obj.data.userId);
                 $("[id=socketId]").html(obj.data.socketId);
+            } else if(obj.route == 'imMan/roomCreate') {
+                $("[id=roomId]").val(obj.data.roomId);
             } else if(obj.route == 'imMan/roomIn') {
-                $("[id=roomId]").html(obj.data.roomId);
+                // $("[id=roomId]").html(obj.data.roomId);
             } else if(obj.route == 'imMan/roomOut') {
                 $("[id=roomId]").html("No Room");
             } else if(obj.route == 'imShare/sendChatNotice') {
@@ -123,7 +125,7 @@ function roomIn() {
         route:'imMan/roomIn',
         req_data:{
             token:'token123456',
-            roomId:'0'
+            roomId:$("#roomId").val(),
         }
     }
     send(obj);
@@ -134,7 +136,7 @@ function roomOut(roomId) {
         route:'imMan/roomOut',
         req_data:{
             token:'token123456',
-            roomId:roomId
+            roomId:$("#roomId").val(),
         }
     }
     send(obj);
@@ -183,14 +185,14 @@ connect();
         <button onclick="logout()">logout</button>
     </div>
     <div id="room">
-        roomId : <lable id="roomId">No Room</lable><br>
+        roomId : <input id="roomId" type="text" name="" value="No Room" /><br>
         <button onclick="roomCreate()">roomCreate</button>
         <button onclick="roomIn()">roomIn</button>
         <button onclick=roomOut($("#roomId").html().trim())>roomOut</button>
     </div>
     <div>
         toUserId : <input id="toUserId" type="text" name="" value="max" /><br>
-        msg : <input id="msg" type="text" name="msg" value="hello" /><br>
+        msg : <input id="msg" type="text" name="" value="hello" /><br>
         <button onclick=sendMsg($("[id=roomId]").html().trim(),$("#msg").val())>sendMsg</button>
     </div>
     <div>

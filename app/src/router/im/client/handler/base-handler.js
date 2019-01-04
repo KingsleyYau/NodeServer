@@ -18,7 +18,6 @@ module.exports = class BaseHandler {
                 errmsg:'',
                 data:{}
             }
-
         }
     }
 
@@ -40,11 +39,8 @@ module.exports = class BaseHandler {
         return user;
     }
 
-    async handle(ctx, reqData) {
-        return await new Promise(function (resolve, reject) {
-            Common.log('im', 'info', '[' + ctx.socketId + ']-BaseHandler.handle');
-            this.getBaseRespond(reqData);
-            reject('');
-        }.bind(this));
+    handle(ctx, reqData) {
+        Common.log('im', 'info', '[' + ctx.socketId + ']-BaseHandler.handle');
+        // this.getBaseRespond(reqData);
     }
 }

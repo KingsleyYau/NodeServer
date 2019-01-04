@@ -26,21 +26,26 @@ let mainRouter = new Router();
 
 function disconnect(ctx) {
     let user = OnlineUserManager.getInstance().getUserWithSocket(ctx.socketId);
-    let roomManager = RoomMananger.getInstance();
-    roomManager.delUser(user);
-    OnlineUserManager.getInstance().logout(user);
+    if( !Common.isNull(user) ) {
+        OnlineUserManager.getInstance().logout(user);
+        if( !Common.isNull(ctx.room) ) {
+            let roomManager = RoomMananger.getInstance();
+            roomManager.delRoomUser(user, ctx.room.roomId);
+        }
+    }
 }
 
 mainRouter.all('/', async (ctx, next) => {
     // 等待异步接口
     await new Promise(function (resolve, reject) {
-        ctx.websocket.on('message', async function (message) {
+        ctx.websocket.on('message', async (message) => {
             Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.request, ' + message);
 
             let data = '';
             let handlerRespond = {};
-            let handler = new BaseHandler();
+            let handler;
 
+            let bHandle = true;
             // 路由分发
             let reqData = JSON.parse(message);
             if( reqData.route == LoginHandler.getRoute() ) {
@@ -55,29 +60,36 @@ mainRouter.all('/', async (ctx, next) => {
                 handler = new RoomOutHandler();
             } else if( reqData.route == SendMsgHandler.getRoute() ) {
                 handler = new SendMsgHandler();
+            } else {
+                bHandle = false;
             }
 
-            // 统一处理返回
-            await handler.handle(ctx, reqData).then( (respond) => {
-                handlerRespond = respond;
-            }).catch( (err) => {
-                Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.handle, err: ', err.message + ', Stack: ' + err.stack);
-            });
+            if( bHandle ) {
+                // 统一处理返回
+                await handler.handle(ctx, reqData).then( (respond) => {
+                    handlerRespond = respond;
+                }).catch( (err) => {
+                    Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.handle, err: ', err.message + ', Stack: ' + err.stack);
+                });
 
-            if( !Common.isNull(handlerRespond.resData) && handlerRespond.resData != '' ) {
-                // 需要返回的命令
-                let json = '';
-                json = JSON.stringify(handlerRespond.resData);
-                ctx.websocket.send(json);
-                Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.respond, ' + json);
+                if( !Common.isNull(handlerRespond.resData) && handlerRespond.resData != '' ) {
+                    // 需要返回的命令
+                    let json = '';
+                    json = JSON.stringify(handlerRespond.resData);
+                    ctx.websocket.send(json);
+                    Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.respond, ' + json);
+                }
+
+                if(handlerRespond.isKick) {
+                    // 需要断开客户端
+                    ctx.websocket.close();
+                }
+
+                resolve(handlerRespond);
+            } else {
+                reject();
             }
 
-            if(handlerRespond.isKick) {
-                // 需要断开客户端
-                ctx.websocket.close();
-            }
-
-            resolve(handlerRespond);
         })
 
         ctx.websocket.on('close', function (err) {

@@ -73,27 +73,25 @@ class OnlineUserManager {
     async getUserWithId(userId) {
         return new Promise( async (resolve, reject) => {
             redisClient.client.keys(Users.User.userIdPattern(userId), async (err, res) => {
-                await new Promise(async (resolve, reject) => {
-                    let userList = [];
-                    if( !Common.isNull(res) && res.length > 0 ) {
-                        for(let i = 0; i < res.length; i++){
-                            // 如果用户已经登录
-                            await new Promise( async (resolve, reject) => {
-                                redisClient.client.hgetall(res[i], (err, res) => {
-                                    if( res != null ) {
-                                        // 获取用户登录信息成功, 需要踢掉旧的连接
-                                        let json = JSON.stringify(res);
-                                        let user = this.getUserWithRedis(res);
-                                        userList.push(user);
-                                        resolve(user);
-                                    }
-                                });
+                let userList = [];
+                if( !Common.isNull(res) && res.length > 0 ) {
+                    for(let i = 0; i < res.length; i++){
+                        // 如果用户已经登录
+                        await new Promise( async (resolve, reject) => {
+                            redisClient.client.hgetall(res[i], (err, res) => {
+                                if( res != null ) {
+                                    // 获取用户登录信息成功, 需要踢掉旧的连接
+                                    let json = JSON.stringify(res);
+                                    let user = this.getUserWithRedis(res);
+                                    userList.push(user);
+                                    resolve(user);
+                                }
                             });
-                        }
+                        });
                     }
-                    Common.log('im', 'debug', '[' + userId  + ']-OnlineUserManager.getUserWithId, hgetall, userList: ' + userList.length + ', err: ' + err);
-                    resolve(userList);
-                }).then( resList => resolve(resList) );
+                }
+                Common.log('im', 'debug', '[' + userId  + ']-OnlineUserManager.getUserWithId, hgetall, userList: ' + userList.length + ', err: ' + err);
+                resolve(userList);
             });
         });
     }

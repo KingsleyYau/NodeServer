@@ -13,6 +13,11 @@ const DBModelKeys = {
             LoginTimeKey:'LoginTimeKey',
             ServerHostKey:'ServerHostKey',
             ServerPortKey:'ServerPortKey',
+        },
+        RoomKey:{
+            RoomMaxIdKey:'RoomMaxIdKey',
+            RoomIdKey:'RoomIdKey',
+            RoomMemberKey:'RoomMemberKey',
         }
     }
 }
