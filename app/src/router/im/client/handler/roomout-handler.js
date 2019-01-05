@@ -23,21 +23,27 @@ module.exports = class RoomOutHandler extends BaseHandler {
 
     async handle(ctx, reqData) {
         return await new Promise( async (resolve, reject) => {
-            Common.log('im', 'info', '[' + ctx.socketId + ']-RoomOutHandler.handle');
+            Common.log('im', 'debug', '[' + ctx.socketId + ']-RoomOutHandler.handle');
 
             let user = this.getBaseRespond(ctx, reqData);
             let roomManager = RoomMananger.getInstance();
-            await roomManager.delRoomUser(user, reqData.req_data.roomId).then(result => {
-                if( Common.isNull(result.err) ) {
-                    // 删除连接直播间Id
-                    delete ctx['roomId'];
 
-                    this.respond.resData.data = result.room.descData();
-                } else {
-                    this.respond.resData.errno = 16104;
-                    this.respond.resData.errmsg = result.err;
-                }
-            });
+            if( !Common.isNull(ctx.roomId) ) {
+                await roomManager.delRoomUser(user, reqData.req_data.roomId).then(result => {
+                    if( Common.isNull(result.err) ) {
+                        // 删除连接直播间Id
+                        delete ctx['roomId'];
+
+                        this.respond.resData.data = result.room.descData();
+                    } else {
+                        this.respond.resData.errno = 16104;
+                        this.respond.resData.errmsg = result.err;
+                    }
+                });
+            } else {
+                this.respond.resData.errno = 16105;
+                this.respond.resData.errmsg = 'you are not in live room.';
+            }
 
             resolve(this.respond);
         });

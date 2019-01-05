@@ -31,7 +31,7 @@ class OnlineUserManager {
     * */
     async login(user) {
         return new Promise( async (resolve, reject) => {
-            Common.log('im', 'warn', '[' + user.userId  + ']-OnlineUserManager.login, [' + user.socketId + ']');
+            Common.log('im', 'warn', '[' + user.userId  + ']-OnlineUserManager.login, [用户登录], [' + user.socketId + ']');
 
             // 保存登录信息
             this.setUserToRedis(user, resolve);
@@ -49,7 +49,7 @@ class OnlineUserManager {
 
                 // redis删除
                 redisClient.client.del(user.uniquePattern(), (err, res) => {
-                    Common.log('im', 'warn', '[' + user.userId  + ']-OnlineUserManager.logout, [' +  user.socketId +  '], delete: ' + res + ', err: ' + err);
+                    Common.log('im', 'warn', '[' + user.userId  + ']-OnlineUserManager.logout, [用户注销], [' +  user.socketId +  '], delete: ' + res + ', err: ' + err);
                     resolve();
                 });
             } else {
