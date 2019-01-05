@@ -170,7 +170,7 @@ class RoomManager {
             redisClient.client.keys(room.uniquePattern(), async (err, res) => {
                 if ( !err && res.length > 0 ) {
                     redisClient.client.smembers(room.memberPattern(), async (err, res) => {
-                        Common.log('im', 'info', '[' + user.userId + ']-RoomManager.broadcast, [直播间广播], roomId: ' + roomId + ', msg: ' + msg + ', err: ' + err + ', res: ' + res);
+                        Common.log('im', 'warn', '[' + user.userId + ']-RoomManager.broadcast, [直播间广播], roomId: ' + roomId + ', msg: ' + msg + ', err: ' + err + ', res: ' + res);
 
                         if (!err) {
                             // 通知其他用户, 有用户进入直播间

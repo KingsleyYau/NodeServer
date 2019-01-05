@@ -38,7 +38,7 @@ clientMainRouter.all('/', async (ctx, next) => {
 
             // 过滤心跳日志
             if( reqData.route != HeartBeatHandler.getRoute() ) {
-                Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.request, ' + message);
+                Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.request, [' + ctx.userId + '], ' + message );
             }
 
             let data = '';
@@ -56,7 +56,7 @@ clientMainRouter.all('/', async (ctx, next) => {
                 await handler.handle(ctx, reqData).then( (respond) => {
                     handlerRespond = respond;
                 }).catch( (err) => {
-                    Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.handle, err: ', err.message + ', Stack: ' + err.stack);
+                    Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.handle, err: ', err.message + ', stack: ' + err.stack);
                 });
 
                 if( !Common.isNull(handlerRespond.resData) && handlerRespond.resData != '' ) {
@@ -67,7 +67,7 @@ clientMainRouter.all('/', async (ctx, next) => {
 
                     // 过滤心跳日志
                     if( reqData.route != HeartBeatHandler.getRoute() ) {
-                        Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.respond, ' + json);
+                        Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.respond, [' + ctx.userId + '], ' + json);
                     }
                 }
 

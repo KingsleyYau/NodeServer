@@ -67,6 +67,8 @@ module.exports = class LoginHandler extends BaseHandler {
             user = this.getBaseRespond(ctx, reqData);
             if( !Common.isNull(user) ) {
                 // 登录成功
+                ctx.userId = user.userId;
+
                 this.respond.resData.data = {
                     socketId:user.socketId,
                     userId:user.userId,
