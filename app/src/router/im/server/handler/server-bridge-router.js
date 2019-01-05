@@ -9,6 +9,7 @@ const Common = require('../../../../lib/common');
 const KickNotice = require('../../client/notice/kick-notice');
 const RoomInNotice = require('../../client/notice/roomin-notice');
 const RoomOutNotice = require('../../client/notice/roomout-notice');
+const RoomCloseNotice = require('../../client/notice/roomclose-notice');
 const SendMsgNotice = require('../../client/notice/sendmsg-notice');
 
 class BridgeRouter {
@@ -28,6 +29,7 @@ class BridgeRouter {
             KickNotice,
             RoomInNotice,
             RoomOutNotice,
+            RoomCloseNotice,
             SendMsgNotice
         ]
     }

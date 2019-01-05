@@ -31,10 +31,6 @@ module.exports = class BroadcastMsgHandler extends BaseHandler {
             let roomManager = RoomMananger.getInstance();
             await roomManager.broadcast(user, reqData.req_data.roomId, reqData.req_data.msg).then(result => {
                 if( Common.isNull(result.err) ) {
-                    // 记录连接直播间Id到
-                    ctx.room = result.room;
-
-                    this.respond.resData.data = result.room.getData();
                 } else {
                     this.respond.resData.errno = 16104;
                     this.respond.resData.errmsg = result.err;

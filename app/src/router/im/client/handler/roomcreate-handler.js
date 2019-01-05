@@ -29,7 +29,7 @@ module.exports = class RoomCreateHandler extends BaseHandler {
             let roomManager = RoomMananger.getInstance();
             await roomManager.addRoom(user).then(result => {
                 if( Common.isNull(result.err) ) {
-                    this.respond.resData.data = result.room.getData();
+                    this.respond.resData.data = result.room.descData();
                 } else {
                     this.respond.resData.errno = 16104;
                     this.respond.resData.errmsg = result.err;

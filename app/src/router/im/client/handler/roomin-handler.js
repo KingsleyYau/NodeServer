@@ -32,7 +32,7 @@ module.exports = class RoomInHandler extends BaseHandler {
                     // 记录连接直播间Id到
                     ctx.room = result.room;
 
-                    this.respond.resData.data = result.room.getData();
+                    this.respond.resData.data = result.room.descData();
                 } else {
                     this.respond.resData.errno = 16104;
                     this.respond.resData.errmsg = result.err;

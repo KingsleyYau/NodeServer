@@ -46,11 +46,11 @@ class User {
     }
 
     static userIdPattern(userId) {
-        return DBModelKeys.RedisKey.OnlineKey + '-' + userId + '-*';
+        return DBModelKeys.RedisKey.OnlineUserKey + '-' + userId + '-*';
     }
 
     uniquePattern() {
-        return DBModelKeys.RedisKey.OnlineKey + '-' + this.userId + '-' + this.socketId;
+        return DBModelKeys.RedisKey.OnlineUserKey + '-' + this.userId + '-' + this.socketId;
     }
 }
 

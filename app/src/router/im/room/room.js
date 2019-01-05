@@ -16,6 +16,7 @@ const DBModelKeys = require('../../../db/model-keys');
 const NoticeSender = require('../client/notice-sender/notice-sender');
 const RoomInNotice = require('../client/notice/roomin-notice');
 const RoomOutNotice = require('../client/notice/roomout-notice');
+const RoomCloseNotice = require('../client/notice/roomclose-notice');
 const SendMsgNotice = require('../client/notice/sendmsg-notice');
 
 class Room {
@@ -35,10 +36,7 @@ class Room {
         return DBModelKeys.RedisKey.RoomKey.RoomMemberKey + '-' + this.roomId;
     }
 
-    /*
-    * 获取房间结构体
-    * */
-    getData() {
+    descData() {
         let data = {
             roomId:this.roomId
         }
@@ -80,12 +78,12 @@ class RoomManager {
                         async (err, res) => {
                         Common.log('im', 'warn', '[' + user.userId + ']-RoomManager.addRoom, ' + roomId + ', err: ' + err + ', res: ' + res);
 
-                        resolve(room, err);
+                        resolve({room:room, err:err});
                     });
 
                 } else {
                     // 出错
-                    resolve(room, err);
+                    resolve({room:room, err:err});
                 }
             });
         });
@@ -95,25 +93,87 @@ class RoomManager {
     * 删除直播间
     * @param roomId 直播间Id
     * */
-    async delRoom(roomId) {
+    async delRoom(user, roomId) {
         return new Promise( async (resolve, reject) => {
             let room = new Room(roomId);
-            redisClient.client.del(room.uniquePattern(), async (err, res) => {
-                Common.log('im', 'warn', 'RoomManager.delRoom, ' + roomId + ', err: ' + err + ', res: ' + res);
-                resolve(room, err);
+
+            // 判断是否存在直播间
+            redisClient.client.keys(room.uniquePattern(), async (err, res) => {
+                Common.log('im', 'info', '[' + user.userId + ']-RoomManager.delRoom, [查找直播间], ' + roomId + ', err: ' + err + ', res: ' + res);
+                if( !err && res.length > 0 )  {
+                    let multi = redisClient.client.multi();
+
+                    // 通知直播间成员直播间关闭
+                    multi.smembers(room.memberPattern(), async (err, res) => {
+                        Common.log('im', 'info', '[' + user.userId + ']-RoomManager.delRoom, [通知直播间成员直播间关闭], ' + roomId + ', err: ' + err + ', res: ' + res);
+
+                        if (!err) {
+                            // 通知其他用户, 有用户进入直播间
+                            for (let i = 0; i < res.length; i++) {
+                                let toUserId = res[i];
+                                let sender = new NoticeSender();
+                                let notice = new RoomCloseNotice(roomId);
+                                sender.send(toUserId, notice);
+                            }
+                        }
+                    });
+
+                    // 删除直播间成员
+                    multi.del(room.memberPattern(), async (err, res) => {
+                        Common.log('im', 'info', 'RoomManager.delRoom, [删除直播间成员], ' + roomId + ', err: ' + err + ', res: ' + res);
+                    });
+
+                    // 删除直播间
+                    multi.del(room.uniquePattern(), async (err, res) => {
+                        Common.log('im', 'info', 'RoomManager.delRoom, [删除直播间Key], ' + roomId + ', err: ' + err + ', res: ' + res);
+                    });
+
+                    multi.exec( async (err, res) => {
+                        Common.log('im', 'warn', 'RoomManager.delRoom, [删除直播间], ' + roomId + ', err: ' + err + ', res: ' + res);
+                        resolve({room:room, err:err});
+                    });
+                } else {
+                    Common.log('im', 'warn', '[' + user.userId + ']-RoomManager.delRoom, [直播间不存在], ' + roomId + ', err: ' + err + ', res: ' + res);
+                    resolve({room:room, err:'live room is not exist.'});
+                }
             });
         });
     }
 
+    // /*
+    // * 获取直播间
+    // * @param roomId 直播间Id
+    // * */
+    // async getRoom(user, roomId) {
+    //     return new Promise( async (resolve, reject) => {
+    //         let room = new Room(roomId);
+    //         redisClient.client.hgetall(room.uniquePattern(), async (err, res) => {
+    //             Common.log('im', 'info', '[' + user.userId  + ']-RoomManager.getRoom, ' + roomId + ', err: ' + err + ', res: ' + res);
+    //             resolve({room:room, err:err});
+    //         });
+    //     });
+    // }
+
     /*
-    * 获取直播间
-    * @param roomId 直播间Id
+    * 直播间广播
     * */
-    async getRoom(user, roomId) {
+    async broadcast(user, roomId, msg) {
         return new Promise( async (resolve, reject) => {
             let room = new Room(roomId);
-            redisClient.client.hgetall(room.uniquePattern(), async (err, res) => {
-                Common.log('im', 'info', '[' + user.userId  + ']-RoomManager.getRoom, ' + roomId + ', err: ' + err + ', res: ' + res);
+
+            redisClient.client.smembers(room.memberPattern(), async (err, res) => {
+                Common.log('im', 'info', '[' + user.userId + ']-RoomManager.broadcast, ' + roomId + ', msg: ' + msg + ', err: ' + err + ', res: ' + res);
+
+                if (!err) {
+                    // 通知其他用户, 有用户进入直播间
+                    for (let i = 0; i < res.length; i++) {
+                        let toUserId = res[i];
+                        let sender = new NoticeSender();
+                        let notice = new SendMsgNotice(user.userId, toUserId.userId, msg);
+                        sender.send(toUserId, notice);
+                    }
+                }
+
                 resolve({room:room, err:err});
             });
         });
@@ -146,29 +206,6 @@ class RoomManager {
     }
 
     /*
-    * 直播间广播
-    * */
-    async broadcast(user, roomId, msg) {
-        return new Promise( async (resolve, reject) => {
-            let room = new Room(roomId);
-
-            redisClient.client.smembers(room.memberPattern(), async (err, res) => {
-                Common.log('im', 'info', '[' + user.userId + ']-RoomManager.broadcast, ' + roomId + ', msg: ' + msg + ', err: ' + err + ', res: ' + res);
-
-                if (!err) {
-                    // 通知其他用户, 有用户进入直播间
-                    for (let i = 0; i < res.length; i++) {
-                        let toUserId = res[i];
-                        let sender = new NoticeSender();
-                        let notice = new SendMsgNotice(user.userId, toUserId.userId, msg);
-                        sender.send(toUserId, notice);
-                    }
-                }
-            });
-        });
-    }
-
-    /*
     * 增加直播间用户
     * */
     async addRoomUser(user, roomId) {
@@ -195,7 +232,7 @@ class RoomManager {
                             }
 
                             redisClient.client.sadd(room.memberPattern(), user.userId, async (err, res) => {
-                                Common.log('im', 'warn', '[' + user.userId  + ']-RoomManager.addRoomUser, ' + roomId + ', err: ' + err + ', res: ' + res);
+                                Common.log('im', 'warn', '[' + user.userId  + ']-RoomManager.addRoomUser, [用户进入直播间], ' + roomId + ', err: ' + err + ', res: ' + res);
                                 resolve({room:room, err:err});
                             });
                         });

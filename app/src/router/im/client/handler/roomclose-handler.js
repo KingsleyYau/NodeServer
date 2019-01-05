@@ -1,5 +1,5 @@
 /*
-* 退出直播间处理类
+* 关闭直播间逻辑处理类
 * Author: Max.Chiu
 * */
 
@@ -12,26 +12,24 @@ const BaseHandler = require('./base-handler');
 // 房间管理器
 const RoomMananger = require('../../room/room').RoomManager;
 
-module.exports = class RoomOutHandler extends BaseHandler {
+module.exports = class RoomCloseHandler extends BaseHandler {
     constructor() {
         super();
     }
 
     static getRoute() {
-        return 'imMan/roomOut';
+        return 'imMan/roomClose';
     }
 
     async handle(ctx, reqData) {
-        return await new Promise( async (resolve, reject) => {
-            Common.log('im', 'info', '[' + ctx.socketId + ']-RoomOutHandler.handle');
+        return new Promise( async (resolve, reject) => {
+            Common.log('im', 'debug', '[' + ctx.socketId + ']-RoomCloseHandler.handle');
 
             let user = this.getBaseRespond(ctx, reqData);
             let roomManager = RoomMananger.getInstance();
-            await roomManager.delRoomUser(user, reqData.req_data.roomId).then(result => {
-                if( Common.isNull(result.err) ) {
-                    // 删除连接直播间Id
-                    delete ctx['room'];
 
+            await roomManager.delRoom(user, reqData.req_data.roomId).then(result => {
+                if( Common.isNull(result.err) ) {
                     this.respond.resData.data = result.room.descData();
                 } else {
                     this.respond.resData.errno = 16104;

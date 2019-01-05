@@ -14,6 +14,7 @@ const OnlineUserManager = require('../../../../user/online-users').OnlineUserMan
 const RoomMananger = require('../../room/room').RoomManager;
 // 业务逻辑处理
 const HandleRouter = require('./client-bridge-router').HandleRouter;
+const HeartBeatHandler = require('./heartbeat-handler');
 
 // 设置路由
 let clientMainRouter = new Router();
@@ -33,24 +34,24 @@ clientMainRouter.all('/', async (ctx, next) => {
     // 等待异步接口
     await new Promise(function (resolve, reject) {
         ctx.websocket.on('message', async (message) => {
-            Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.request, ' + message);
+            let reqData = JSON.parse(message);
+
+            // 过滤心跳日志
+            if( reqData.route != HeartBeatHandler.getRoute() ) {
+                Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.request, ' + message);
+            }
 
             let data = '';
             let handlerRespond = {};
             let handler = null;
 
-            let bHandle = true;
             // 路由分发
-            let reqData = JSON.parse(message);
-
             let handlerCls = HandleRouter.getInstance().getRouterByName(reqData.route);
             if( handlerCls ) {
                 handler = new handlerCls();
-            } else {
-                bHandle = false;
             }
 
-            if( bHandle ) {
+            if( handler ) {
                 // 统一处理返回
                 await handler.handle(ctx, reqData).then( (respond) => {
                     handlerRespond = respond;
@@ -63,7 +64,11 @@ clientMainRouter.all('/', async (ctx, next) => {
                     let json = '';
                     json = JSON.stringify(handlerRespond.resData);
                     ctx.websocket.send(json);
-                    Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.respond, ' + json);
+
+                    // 过滤心跳日志
+                    if( reqData.route != HeartBeatHandler.getRoute() ) {
+                        Common.log('im', 'info', '[' + ctx.socketId + ']-MainRouter.respond, ' + json);
+                    }
                 }
 
                 if(handlerRespond.isKick) {

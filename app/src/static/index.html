@@ -27,11 +27,12 @@ function reset() {
 function connect() {
     reset();
 
-    client = new WebSocket('ws://192.168.88.138:9877/');
+    let host = 'ws://192.168.88.138:9877/';
+    client = new WebSocket(host);
     client.binaryType = 'arraybuffer';
 
 	client.onopen = function() {
-		console.log('Client onopen()');
+		console.log('Client.onopen(), ' + host);
 
 		// var bytes = new Uint8Array([0x48, 0x65, 0x6C, 0x6C, 0x6F]); // Hello
 		// client.send(bytes.buffer);
@@ -41,7 +42,7 @@ function connect() {
     };
 
 	client.onclose = function(ev) {
-        console.log('Client onclose()');
+        console.log('Client.onclose() ');
 
         $("[id=status]").html('Not Connected');
 
@@ -49,15 +50,28 @@ function connect() {
     }
 
 	client.onmessage = function(ev) {
-        console.log('Client onmessage(), ' + ev.data);
+        console.log('Client.onmessage(), ' + ev.data);
         let obj = JSON.parse(ev.data);
-        $("[id=jsonRecv]").html(ev.data);
+
+        if( obj.route != "heartbeat" ) {
+            if( typeof(obj.data) != "undefined" ) {
+                // Recv respond
+                $("[id=jsonRespond]").html(ev.data);
+            } else if( typeof(obj.req_data) != "undefined"  ) {
+                // Recv notice
+                $("[id=jsonRecv]").html(ev.data);
+            }
+        }
 
         if( typeof(obj.errno) == "undefined" || obj.errno == 0 ) {
             if(obj.route == 'imLogin/login') {
+                // Login Success
                 $("[id=userId]").html(obj.data.userId);
                 $("[id=socketId]").html(obj.data.socketId);
+
                 roomList();
+                heartBeat();
+
             } else if(obj.route == 'imMan/roomList') {
                 let roomListStr = '';
                 for(let i = 0; i < obj.data.roomList.length; i++) {
@@ -65,6 +79,7 @@ function connect() {
                     roomListStr += ' ';
                 }
                 $("[id=roomList]").html(roomListStr);
+                $("[id=roomId]").val(obj.data.roomList[0]);
             } else if(obj.route == 'imMan/roomCreate') {
                 $("[id=roomId]").val(obj.data.roomId);
             } else if(obj.route == 'imMan/roomIn') {
@@ -81,10 +96,13 @@ function connect() {
 function send(obj) {
     obj.id = reqId;
     data = JSON.stringify(obj);
-    console.log('Client send(), ' + data);
+
+    console.log('Client.send(), ' + data);
 
     if( client.readyState == client.OPEN ) {
-        $("[id=jsonSend]").html(data);
+        if( obj.route != "heartbeat" ) {
+            $("[id=jsonSend]").html(data);
+        }
         client.send(data);
         reqId++;
         return true;
@@ -94,12 +112,21 @@ function send(obj) {
     }
 }
 
+function sendHeartBeat() {
+    obj = {
+        route:'heartbeat',
+        req_data:{
+        }
+    }
+    send(obj);
+}
+
 function login() {
     obj = {
         route:'imLogin/login',
         req_data:{
             userId:$("#userId").val(),
-            sessionId:'session123456',
+            token:'token123456',
             pagename:7
         }
     }
@@ -110,7 +137,6 @@ function logout() {
     obj = {
         route:'imLogin/logout',
         req_data:{
-            sessionid:'session123456',
             pagename:7
         }
     }
@@ -121,7 +147,6 @@ function roomList() {
     obj = {
         route:'imMan/roomList',
         req_data:{
-            token:'token123456',
         }
     }
     send(obj);
@@ -131,7 +156,16 @@ function roomCreate() {
     obj = {
         route:'imMan/roomCreate',
         req_data:{
-            token:'token123456',
+        }
+    }
+    send(obj);
+}
+
+function roomClose() {
+    obj = {
+        route:'imMan/roomClose',
+        req_data:{
+            roomId:$("#roomId").val(),
         }
     }
     send(obj);
@@ -141,7 +175,6 @@ function roomIn() {
     obj = {
         route:'imMan/roomIn',
         req_data:{
-            token:'token123456',
             roomId:$("#roomId").val(),
         }
     }
@@ -152,7 +185,6 @@ function roomOut(roomId) {
     obj = {
         route:'imMan/roomOut',
         req_data:{
-            token:'token123456',
             roomId:roomId,
         }
     }
@@ -163,7 +195,6 @@ function broadcast(roomId, msg) {
     obj = {
         route:'imShare/sendLiveChat',
         req_data:{
-            token:'token123456',
             roomId:roomId,
             msg:msg
         }
@@ -175,7 +206,6 @@ function sendMsg(userId, msg) {
     obj = {
         route:'imShare/sendMsg',
         req_data:{
-            token:'token123456',
             toUserId:userId,
             msg:msg
         }
@@ -183,6 +213,9 @@ function sendMsg(userId, msg) {
     send(obj);
 }
 
+/*
+* 业务逻辑
+* */
 function reconnect() {
     // console.log('Client reconnect()');
     // setTimeout(() => {
@@ -196,6 +229,16 @@ function reconnect() {
     //         reconnect();
     //     }
     // }, 5000);
+}
+
+function heartBeat() {
+    console.log('Client.heartBeat()');
+    setTimeout(() => {
+        if( client.readyState == client.OPEN ) {
+            sendHeartBeat();
+            heartBeat();
+        }
+    }, 10000);
 }
 
 connect();
@@ -219,6 +262,7 @@ connect();
         <button onclick=roomCreate()>roomCreate</button>
         <button onclick=roomIn()>roomIn</button>
         <button onclick=roomOut($("#roomId").val())>roomOut</button>
+        <button onclick=roomClose()>roomClose</button>
         <button onclick=broadcast($("#roomId").val(),$("#roomMsg").val())>broadcast</button>
     </div>
     <div>
@@ -233,7 +277,10 @@ connect();
         json recv : <lable id="jsonRecv" />
     </div>
     <div style="color:#F00000">
-        json send : <lable id="jsonSend" />
+        json request : <lable id="jsonSend" />
+    </div>
+    <div style="color:#0000F0">
+        json respond : <lable id="jsonRespond" />
     </div>
 </div>
 </body>
