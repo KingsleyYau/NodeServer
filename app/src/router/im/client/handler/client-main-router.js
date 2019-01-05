@@ -23,9 +23,9 @@ function disconnect(ctx) {
     let user = OnlineUserManager.getInstance().getUserWithSocket(ctx.socketId);
     if( !Common.isNull(user) ) {
         OnlineUserManager.getInstance().logout(user);
-        if( !Common.isNull(ctx.room) ) {
+        if( !Common.isNull(ctx.roomId) ) {
             let roomManager = RoomMananger.getInstance();
-            roomManager.delRoomUser(user, ctx.room.roomId);
+            roomManager.delRoomUser(user, ctx.roomId);
         }
     }
 }

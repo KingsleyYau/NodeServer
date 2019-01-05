@@ -30,7 +30,7 @@ module.exports = class RoomOutHandler extends BaseHandler {
             await roomManager.delRoomUser(user, reqData.req_data.roomId).then(result => {
                 if( Common.isNull(result.err) ) {
                     // 删除连接直播间Id
-                    delete ctx['room'];
+                    delete ctx['roomId'];
 
                     this.respond.resData.data = result.room.descData();
                 } else {

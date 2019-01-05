@@ -62,12 +62,13 @@ class RoomManager {
     * */
     async addRoom(user) {
         return new Promise( async (resolve, reject) => {
+            let room = null;
+            let roomId = 0;
+
             redisClient.client.incr(DBModelKeys.RedisKey.RoomKey.RoomMaxIdKey, async (err, res) => {
                 Common.log('im', 'info', '[' + user.userId + ']-RoomManager.addRoom, Incr RoomMaxIdKey, err: ' + err + ', res: ' + res);
 
-                let room = null;
                 if( err == null ) {
-                    let roomId = 0;
                     if( res != null ) {
                         roomId = parseInt(res, 10);
                     }
@@ -76,7 +77,7 @@ class RoomManager {
                     redisClient.client.hmset(room.uniquePattern(),
                         DBModelKeys.RedisKey.RoomKey.RoomIdKey, roomId,
                         async (err, res) => {
-                        Common.log('im', 'warn', '[' + user.userId + ']-RoomManager.addRoom, ' + roomId + ', err: ' + err + ', res: ' + res);
+                        Common.log('im', 'warn', '[' + user.userId + ']-RoomManager.addRoom, [创建直播间], ' + roomId + ', err: ' + err + ', res: ' + res);
 
                         resolve({room:room, err:err});
                     });
@@ -161,20 +162,26 @@ class RoomManager {
         return new Promise( async (resolve, reject) => {
             let room = new Room(roomId);
 
-            redisClient.client.smembers(room.memberPattern(), async (err, res) => {
-                Common.log('im', 'info', '[' + user.userId + ']-RoomManager.broadcast, ' + roomId + ', msg: ' + msg + ', err: ' + err + ', res: ' + res);
+            redisClient.client.keys(room.uniquePattern(), async (err, res) => {
+                if ( !err && res.length > 0 ) {
+                    redisClient.client.smembers(room.memberPattern(), async (err, res) => {
+                        Common.log('im', 'info', '[' + user.userId + ']-RoomManager.broadcast, ' + roomId + ', msg: ' + msg + ', err: ' + err + ', res: ' + res);
 
-                if (!err) {
-                    // 通知其他用户, 有用户进入直播间
-                    for (let i = 0; i < res.length; i++) {
-                        let toUserId = res[i];
-                        let sender = new NoticeSender();
-                        let notice = new SendMsgNotice(user.userId, toUserId.userId, msg);
-                        sender.send(toUserId, notice);
-                    }
+                        if (!err) {
+                            // 通知其他用户, 有用户进入直播间
+                            for (let i = 0; i < res.length; i++) {
+                                let toUserId = res[i];
+                                let sender = new NoticeSender();
+                                let notice = new SendMsgNotice(user.userId, toUserId.userId, msg);
+                                sender.send(toUserId, notice);
+                            }
+                        }
+
+                        resolve({room:room, err:err});
+                    });
+                } else {
+                    resolve({room:room, err:'live room is not exist.'});
                 }
-
-                resolve({room:room, err:err});
             });
         });
     }

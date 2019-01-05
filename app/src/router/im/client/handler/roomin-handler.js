@@ -30,7 +30,7 @@ module.exports = class RoomInHandler extends BaseHandler {
             await roomManager.addRoomUser(user, reqData.req_data.roomId).then(result => {
                 if( Common.isNull(result.err) ) {
                     // 记录连接直播间Id到
-                    ctx.room = result.room;
+                    ctx.roomId = result.room.roomId;
 
                     this.respond.resData.data = result.room.descData();
                 } else {

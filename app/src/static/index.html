@@ -19,6 +19,7 @@ function reset() {
     $("[id=userId]").html('');
     $("[id=socketId]").html('');
     $("[id=roomId]").html("No Room");
+    $("[id=roomStatus]").html("");
     $("[id=msgRecv]").html('');
     $("[id=jsonRecv]").html('');
     $("[id=jsonSend]").html('');
@@ -80,14 +81,19 @@ function connect() {
                 }
                 $("[id=roomList]").html(roomListStr);
                 $("[id=roomId]").val(obj.data.roomList[0]);
+                $("[id=roomStatus]").html("");
             } else if(obj.route == 'imMan/roomCreate') {
                 $("[id=roomId]").val(obj.data.roomId);
+                $("[id=roomStatus]").html("");
             } else if(obj.route == 'imMan/roomIn') {
-                // $("[id=roomId]").html(obj.data.roomId);
+                $("[id=roomStatus]").html(" [In]");
             } else if(obj.route == 'imMan/roomOut') {
-                $("[id=roomId]").html("No Room");
+                $("[id=roomStatus]").html("");
             } else if(obj.route == 'imShare/sendChatNotice') {
                 $("[id=msgRecv]").html(obj.req_data.msg);
+            } else if(obj.route == 'imShare/roomCloseNotice') {
+                $("[id=roomId]").val("");
+                $("[id=roomStatus]").html("");
             }
         }
 	};
@@ -195,7 +201,6 @@ function broadcast(roomId, msg) {
     obj = {
         route:'imShare/sendLiveChat',
         req_data:{
-            roomId:roomId,
             msg:msg
         }
     }
@@ -257,7 +262,7 @@ connect();
     </div>
     <div id="room">
         roomIdList : <lable id="roomList"></lable><br>
-        roomId : <input id="roomId" type="text" name="" value="No Room" /><br>
+        roomId : <input id="roomId" type="text" name="" value="No Room" /><lable id="roomStatus"></lable><br>
         roomMsg : <input id="roomMsg" type="text" name="" value="Room Message" /><br>
         <button onclick=roomCreate()>roomCreate</button>
         <button onclick=roomIn()>roomIn</button>
