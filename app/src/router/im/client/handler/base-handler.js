@@ -40,6 +40,5 @@ module.exports = class BaseHandler {
     }
 
     handle(ctx, reqData) {
-        Common.log('im', 'info', '[' + ctx.socketId + ']-BaseHandler.handle');
     }
 }

@@ -24,8 +24,6 @@ module.exports = class SendMsgHandler extends BaseHandler {
 
     async handle(ctx, reqData) {
         return await new Promise( async (resolve, reject) => {
-            Common.log('im', 'debug', '[' + ctx.socketId + ']-SendMsgHandler.handle');
-
             let bFlag = false;
             let user = this.getBaseRespond(ctx, reqData);
 

@@ -23,8 +23,6 @@ module.exports = class RoomCloseHandler extends BaseHandler {
 
     async handle(ctx, reqData) {
         return new Promise( async (resolve, reject) => {
-            Common.log('im', 'debug', '[' + ctx.socketId + ']-RoomCloseHandler.handle');
-
             let user = this.getBaseRespond(ctx, reqData);
             let roomManager = RoomMananger.getInstance();
 

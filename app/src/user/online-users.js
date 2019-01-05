@@ -90,7 +90,7 @@ class OnlineUserManager {
                         });
                     }
                 }
-                Common.log('im', 'debug', '[' + userId  + ']-OnlineUserManager.getUserWithId, hgetall, userList: ' + userList.length + ', err: ' + err);
+                // Common.log('im', 'debug', '[' + userId  + ']-OnlineUserManager.getUserWithId, hgetall, userList: ' + userList.length + ', err: ' + err);
                 resolve(userList);
             });
         });

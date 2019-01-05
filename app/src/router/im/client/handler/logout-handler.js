@@ -21,8 +21,6 @@ module.exports = class LogoutHandler extends BaseHandler {
 
     async handle(ctx, reqData) {
         return new Promise(function (resolve, reject) {
-            Common.log('im', 'info', '[' + ctx.socketId + ']-LogoutHandler.handle');
-
             let user = this.getBaseRespond(ctx, reqData);
             if( !Common.isNull(user)  ) {
                 this.respond.isKick = true;

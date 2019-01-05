@@ -32,13 +32,13 @@ module.exports = class NoticeSender {
 
                     // 本地用户, 直接发送
                     let json = JSON.stringify(notice.obj.noticeData);
-                    Common.log('im', 'info', '[' + userId + ']-NoticeSender.send, Local User, [' + url + '], ' + json);
+                    Common.log('im', 'debug', '[' + userId + ']-NoticeSender.send, Local User, [' + url + '], ' + json);
                     notice.send(user);
 
                 } else {
                     // 外部服务, 发送到对应服务
                     let json = JSON.stringify(notice.obj.noticeData.req_data);
-                    Common.log('im', 'info', '[' + userId + ']-NoticeSender.send, Remote User, [' + url + '], ' + json);
+                    Common.log('im', 'debug', '[' + userId + ']-NoticeSender.send, Remote User, [' + url + '], ' + json);
                     let client = io(url, {parser:jsonParser});
                     try {
                         client.emit(notice.obj.noticeData.route, {

@@ -23,8 +23,6 @@ module.exports = class RoomInHandler extends BaseHandler {
 
     async handle(ctx, reqData) {
         return await new Promise( async (resolve, reject) => {
-            Common.log('im', 'debug', '[' + ctx.socketId + ']-RoomInHandler.handle');
-
             let user = this.getBaseRespond(ctx, reqData);
             let roomManager = RoomMananger.getInstance();
             await roomManager.addRoomUser(user, reqData.req_data.roomId).then(result => {

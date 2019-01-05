@@ -21,8 +21,6 @@ module.exports = class HeartBeatHandler extends BaseHandler {
 
     async handle(ctx, reqData) {
         return new Promise( async (resolve, reject) => {
-            Common.log('im', 'debug', '[' + ctx.socketId + ']-HeartBeatHandler.handle');
-
             let user = this.getBaseRespond(ctx, reqData);
             resolve(this.respond);
         });

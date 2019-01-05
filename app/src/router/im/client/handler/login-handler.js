@@ -28,8 +28,6 @@ module.exports = class LoginHandler extends BaseHandler {
 
     async handle(ctx, reqData) {
         return new Promise(async (resolve, reject) => {
-            Common.log('im', 'debug', '[' + ctx.socketId + ']-LoginHandler.handle');
-
             let user = null;
             if( !Common.isNull(reqData.req_data.userId) ) {
                 // 如果已经登录, 直接返回
@@ -50,7 +48,7 @@ module.exports = class LoginHandler extends BaseHandler {
                         for (let i = 0; i < userList.length; i++) {
                             let oldUser = userList[i];
                             if (!Common.isNull(oldUser.websocket)) {
-                                Common.log('im', 'warn', '[' + user.userId + ']-LoginHandler.handle, Kick Old User, ' +
+                                Common.log('im', 'warn', '[' + user.userId + ']-LoginHandler.handle, [踢出旧用户], ' +
                                     '[' + oldUser.socketId + '], '+
                                     '[' + oldUser.serverHost + ':' + oldUser.serverPort + ']');
 
